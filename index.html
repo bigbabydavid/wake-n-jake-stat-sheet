@@ -410,6 +410,15 @@
       </div>
       <div class="scope-row" id="rankRow" hidden></div>
       <div class="scope-row" id="teamRow"></div>
+      <div class="scope-row" id="postseasonRoundRow">
+        <label>Postseason round</label>
+        <button type="button" class="tf-pill on" data-round="all">All Rounds</button>
+        <button type="button" class="tf-pill" data-round="F">Wild Card</button>
+        <button type="button" class="tf-pill" data-round="D">Division Series</button>
+        <button type="button" class="tf-pill" data-round="L">Championship Series</button>
+        <button type="button" class="tf-pill" data-round="W">World Series</button>
+      </div>
+      <div class="scope-row" id="postseasonYearsRow"><span class="modal-empty">Loading postseason history…</span></div>
       <div class="scope-row">
         <label for="matchupSearch">Career vs. opponent</label>
         <input type="text" id="matchupSearch" placeholder="Search a player…" autocomplete="off" style="flex:1;min-width:180px">
@@ -1238,6 +1247,13 @@ let modalMonths = new Set();    // calendar months (3-10) to include, combinable
 let seasonsExpanded = false;
 let modalSeasonList = [];       // every season this player has MLB stats for
 
+// Postseason scope — a year-by-year cache (kept separate from the regular-season one above)
+// broken out by round, so round and year selection are both just filters over the same fetch.
+let modalPostseasonYears = {};                // { hitting: Map(year->Map(round->stat)), pitching: same }
+let modalSelectedPostseasonYears = new Set(); // years currently checked in the postseason years row
+let modalPostseasonAllYears = false;          // "All Years" pill — mutually exclusive with the above
+let modalPostseasonRound = 'all';             // 'all' | 'F' | 'D' | 'L' | 'W'
+
 const num = v => { const n = parseFloat(v); return isNaN(n) ? 0 : n; };
 // inningsPitched comes back as "62.1" meaning 62 innings + 1 out, so it can't be summed as a
 // float; outs is the only safe unit to add. Fall back to parsing IP when outs is absent.
@@ -1512,6 +1528,78 @@ async function fetchTeamTenure(pid, group) {
   });
   return [...byTeam.entries()].map(([name, parts]) => ({ name, stat: aggregateFor(group, parts) }))
     .filter(x => x.stat);
+}
+
+// ---- Postseason -----------------------------------------------------------------------
+// Year by year, kept broken out by round (gameType F/D/L/W = Wild Card/Division/Championship/
+// World Series) rather than pre-summed — "all rounds" and "one specific round" are both just a
+// filter over the same cache, so career and any combination of years share one fetch per group.
+const POSTSEASON_ROUND_NAME = { all: 'Postseason', F: 'Wild Card Series', D: 'Division Series', L: 'Championship Series', W: 'World Series' };
+
+async function loadPostseasonYears(pid, groups) {
+  const out = {};
+  await Promise.all(groups.map(async group => {
+    const d = await jc(`${statsBase(pid)}/stats?stats=yearByYear&group=${group}&gameType=F,D,L,W`).catch(() => null);
+    const splits = (d && d.stats && d.stats[0] && d.stats[0].splits) || [];
+    const byYear = new Map();   // year -> Map(round -> stat)
+    splits.forEach(s => {
+      const y = +s.season, rd = s.gameType;
+      if (!rd) return;
+      if (!byYear.has(y)) byYear.set(y, new Map());
+      byYear.get(y).set(rd, s.stat);
+    });
+    out[group] = byYear;
+  }));
+  return out;
+}
+
+// Raw stat lines for the requested postseason years, filtered to one round or every round that
+// year ('all') — the shared read path for a single season and any combined selection.
+function postseasonEntriesFor(byYear, years, round) {
+  const entries = [];
+  years.forEach(y => {
+    const rounds = byYear.get(y);
+    if (!rounds) return;
+    if (round === 'all') rounds.forEach(st => entries.push(st));
+    else if (rounds.has(round)) entries.push(rounds.get(round));
+  });
+  return entries;
+}
+
+function postseasonLabel(years, allYears, round) {
+  const roundName = (POSTSEASON_ROUND_NAME[round] || 'Postseason').toUpperCase();
+  if (allYears) return round === 'all' ? 'CAREER POSTSEASON' : `CAREER ${roundName}`;
+  const sorted = [...years].map(Number).sort((a, b) => a - b);
+  const isRun = sorted.length > 1 && sorted.length === sorted[sorted.length - 1] - sorted[0] + 1;
+  const yrsLabel = sorted.length === 1 ? sorted[0]
+    : isRun ? `${sorted[0]}–${sorted[sorted.length - 1]}`
+    : sorted.join(', ');
+  return round === 'all' ? `${yrsLabel} POSTSEASON` : `${yrsLabel} ${roundName}`;
+}
+
+// Sums the postseason cache client-side over whichever years/round are selected — same idea as
+// fetchRange/fetchSince above, since the API has no endpoint that combines postseason years itself.
+function buildPostseasonGraphicData(row, years, allYears, round) {
+  const group = wantsPitching(row) && !wantsBatting(row) ? 'pitching' : 'hitting';
+  const byYear = modalPostseasonYears[group];
+  if (!byYear || !byYear.size) return null;
+  const yrs = allYears ? [...byYear.keys()] : years.map(Number);
+  const entries = postseasonEntriesFor(byYear, yrs, round);
+  if (!entries.length) return null;
+  const combined = aggregateFor(group, entries);
+  const label = postseasonLabel(yrs, allYears, round);
+  if (group === 'pitching') {
+    return { label, splitLabel: label, cells: [
+      ['IP', combined.inningsPitched], ['ERA', combined.era], ['WHIP', combined.whip],
+      ['W-L', `${combined.wins}-${combined.losses}`],
+      ['K%', kPct(combined.strikeOuts, combined.battersFaced)],
+      ['BB%', bbPct(combined.baseOnBalls, combined.battersFaced)] ] };
+  }
+  return { label, splitLabel: label, hitLine: `${combined.hits}-for-${combined.atBats}`, cells: [
+    ['AVG', combined.avg], ['OBP', combined.obp], ['SLG', combined.slg], ['OPS', combined.ops],
+    ['K%', kPct(combined.strikeOuts, combined.plateAppearances)],
+    ['BB%', bbPct(combined.baseOnBalls, combined.plateAppearances)],
+    ['HR', combined.homeRuns], ['RBI', combined.rbi] ] };
 }
 
 // Months are combinable the same way seasons are: pick any set, and the totals are aggregated
@@ -2316,6 +2404,74 @@ function wireModalExtras() {
       };
       box.appendChild(b);
     });
+  })();
+
+  // Postseason: year-by-year cache broken out by round (gameType F/D/L/W), fetched once per
+  // player open — round and year selection are both pure filters over that same cache.
+  modalPostseasonYears = {};
+  modalSelectedPostseasonYears = new Set();
+  modalPostseasonAllYears = false;
+  modalPostseasonRound = 'all';
+  const roundRow = $('postseasonRoundRow');
+  roundRow.querySelectorAll('.tf-pill').forEach(b => b.classList.toggle('on', b.dataset.round === 'all'));
+  roundRow.onclick = e => {
+    const b = e.target.closest('button[data-round]');
+    if (!b) return;
+    modalPostseasonRound = b.dataset.round;
+    roundRow.querySelectorAll('.tf-pill').forEach(x => x.classList.toggle('on', x === b));
+  };
+  const yearsRow = $('postseasonYearsRow');
+  yearsRow.innerHTML = '<span class="modal-empty">Loading postseason history…</span>';
+  (async () => {
+    const pid = modalPid, r = modalRow;
+    const groups = [wantsBatting(r) && 'hitting', wantsPitching(r) && 'pitching'].filter(Boolean);
+    const data = await loadPostseasonYears(pid, groups).catch(() => ({}));
+    if (modalPid !== pid) return;
+    modalPostseasonYears = data;
+    const years = [...new Set([
+      ...(data.hitting ? [...data.hitting.keys()] : []),
+      ...(data.pitching ? [...data.pitching.keys()] : []),
+    ])].sort((a, b) => b - a);
+    if (!years.length) {
+      yearsRow.innerHTML = '<span class="modal-empty">No postseason history found.</span>';
+      return;
+    }
+    yearsRow.innerHTML = '<label>Postseason years</label>' +
+      `<button type="button" class="tf-pill" data-year="all">All Years</button>` +
+      years.map(y => `<button type="button" class="tf-pill" data-year="${y}">${y}</button>`).join('') +
+      `<button type="button" class="tf-pill" id="postseasonApply" disabled>Apply</button>`;
+    const applyBtn = yearsRow.querySelector('#postseasonApply');
+    const syncApply = () => {
+      const n = modalSelectedPostseasonYears.size;
+      applyBtn.disabled = !modalPostseasonAllYears && !n;
+      applyBtn.textContent = n > 1 ? `Apply (${n})` : 'Apply';
+    };
+    yearsRow.querySelectorAll('button[data-year]').forEach(b => {
+      b.onclick = () => {
+        if (b.dataset.year === 'all') {
+          modalPostseasonAllYears = !modalPostseasonAllYears;
+          modalSelectedPostseasonYears.clear();   // redundant once every season is included
+          yearsRow.querySelectorAll('button[data-year]').forEach(x =>
+            x.classList.toggle('on', x.dataset.year === 'all' ? modalPostseasonAllYears : false));
+        } else {
+          modalPostseasonAllYears = false;
+          const allBtn = yearsRow.querySelector('[data-year="all"]');
+          if (allBtn) allBtn.classList.remove('on');
+          const y = b.dataset.year;
+          if (modalSelectedPostseasonYears.has(y)) { modalSelectedPostseasonYears.delete(y); b.classList.remove('on'); }
+          else { modalSelectedPostseasonYears.add(y); b.classList.add('on'); }
+        }
+        syncApply();
+      };
+    });
+    applyBtn.onclick = () => {
+      if (!modalPostseasonAllYears && !modalSelectedPostseasonYears.size) return;
+      const r2 = modalRow;
+      const years2 = [...modalSelectedPostseasonYears];
+      const data2 = buildPostseasonGraphicData(r2, years2, modalPostseasonAllYears, modalPostseasonRound);
+      if (!data2) { $('modalDlNote').textContent = 'No postseason stats for that selection.'; return; }
+      pushCustomGraphic(data2, wantsPitching(r2) && !wantsBatting(r2) ? 'pit' : 'bat');
+    };
   })();
 
   // opponent search reuses the already-loaded league-wide player index, so it's instant and

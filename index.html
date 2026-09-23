@@ -1307,6 +1307,14 @@ async function fetchStat(pid, group, tf, year) {
 
 function wantsBatting(row) { return row.pos !== 'P'; }
 function wantsPitching(row) { return row.pos === 'P' || row.pos === 'TWP'; }
+// A true two-way player (MLB tags this as position 'TWP' — currently just Ohtani, but this
+// isn't hardcoded to him) wants both hitting and pitching everywhere, not just the main stat
+// body: L/R splits, notable rankings, postseason, and career-vs-opponent all need to offer both
+// sides rather than silently collapsing to whichever the isPitcher-style boolean picks.
+function isTwoWay(row) { return wantsBatting(row) && wantsPitching(row); }
+// A player's role relative to a specific opponent, used to pick which of a two-way player's
+// stat lines (hitting or pitching) applies against that particular opponent.
+function roleVs(oppPos) { return (oppPos === 'P' || oppPos === 'TWP') ? 'hitting' : 'pitching'; }
 
 // =====================================================================================
 // Season scope — which season(s) the split is measured over. Any combination of seasons can be
@@ -1463,8 +1471,8 @@ const cityOf = name => String(name || '').replace(nickOf(name), '').trim();
 // ---- Lefty/righty side-by-side comparison -------------------------------------------------
 // Pitchers' "vs a hand" numbers are against-stats (AVG allowed, batters faced), so the same
 // shape reads correctly for both sides of the ball.
-async function buildLRCompareData(pid, row, tier) {
-  const isPitcher = wantsPitching(row) && !wantsBatting(row);
+async function buildLRCompareData(pid, row, tier, forcedGroup) {
+  const isPitcher = forcedGroup ? forcedGroup === 'pitching' : (wantsPitching(row) && !wantsBatting(row));
   const group = isPitcher ? 'pitching' : 'hitting';
   const statType = tier === 'career' ? 'careerStatSplits' : 'statSplits';
   const seasonParam = tier === 'career' ? '' : `&season=${$('season').value}`;
@@ -1517,8 +1525,10 @@ async function buildLRCompareData(pid, row, tier) {
 }
 
 // ---- Career vs. a specific opponent -------------------------------------------------------
-async function buildMatchupData(pid, row, oppId, oppName) {
-  const isPitcher = wantsPitching(row) && !wantsBatting(row);
+async function buildMatchupData(pid, row, oppId, oppName, oppPos) {
+  // A two-way subject's group depends on the opponent: his hitting line applies against a
+  // pitcher, his pitching line against a batter. A single-role player ignores oppPos entirely.
+  const isPitcher = isTwoWay(row) ? roleVs(oppPos) === 'pitching' : (wantsPitching(row) && !wantsBatting(row));
   const group = isPitcher ? 'pitching' : 'hitting';
   const d = await jc(`${API}/people/${pid}/stats?stats=vsPlayer&opposingPlayerId=${oppId}&group=${group}&sportId=1`);
   const sec = (d.stats || [])[0];
@@ -1565,23 +1575,31 @@ async function findPlayerRank(pid, category, group, leagueId) {
   return hit ? { rank: hit.rank, value: hit.value } : null;
 }
 
-async function findNotableRankings(pid, isPitcher) {
-  const categories = isPitcher ? RANK_CATEGORIES_PIT : RANK_CATEGORIES_BAT;
-  const group = isPitcher ? 'pitching' : 'hitting';
-  const results = await Promise.all(categories.map(async ([cat, label]) => {
-    const [mlb, al, nl] = await Promise.all([
-      findPlayerRank(pid, cat, group, null),
-      findPlayerRank(pid, cat, group, 103),
-      findPlayerRank(pid, cat, group, 104),
-    ]);
-    const hits = [];
-    if (mlb && mlb.rank <= RANK_NOTABLE_MAX) hits.push({ scope: 'MLB', label, rank: mlb.rank, value: mlb.value });
-    else {
-      if (al && al.rank <= RANK_NOTABLE_MAX) hits.push({ scope: 'AL', label, rank: al.rank, value: al.value });
-      if (nl && nl.rank <= RANK_NOTABLE_MAX) hits.push({ scope: 'NL', label, rank: nl.rank, value: nl.value });
-    }
-    return hits;
-  }));
+// twoWay=true checks both hitting and pitching leaderboards and tags each hit with its group
+// (so the caller knows which side to push on air); otherwise behaves as before, single group.
+async function findNotableRankings(pid, isPitcher, twoWay) {
+  const groupCats = twoWay
+    ? [['hitting', RANK_CATEGORIES_BAT], ['pitching', RANK_CATEGORIES_PIT]]
+    : [[isPitcher ? 'pitching' : 'hitting', isPitcher ? RANK_CATEGORIES_PIT : RANK_CATEGORIES_BAT]];
+  const results = await Promise.all(groupCats.flatMap(([group, categories]) =>
+    categories.map(async ([cat, label]) => {
+      const [mlb, al, nl] = await Promise.all([
+        findPlayerRank(pid, cat, group, null),
+        findPlayerRank(pid, cat, group, 103),
+        findPlayerRank(pid, cat, group, 104),
+      ]);
+      // Tag the label so a combined (two-way) list still reads clearly ("HR (Batting)" vs.
+      // leaving hitting and pitching ranks indistinguishable in the same list).
+      const dispLabel = twoWay ? `${label} (${group === 'pitching' ? 'Pitching' : 'Batting'})` : label;
+      const hits = [];
+      if (mlb && mlb.rank <= RANK_NOTABLE_MAX) hits.push({ scope: 'MLB', label: dispLabel, rank: mlb.rank, value: mlb.value, group });
+      else {
+        if (al && al.rank <= RANK_NOTABLE_MAX) hits.push({ scope: 'AL', label: dispLabel, rank: al.rank, value: al.value, group });
+        if (nl && nl.rank <= RANK_NOTABLE_MAX) hits.push({ scope: 'NL', label: dispLabel, rank: nl.rank, value: nl.value, group });
+      }
+      return hits;
+    })
+  ));
   return results.flat().sort((a, b) => a.rank - b.rank).slice(0, 12);
 }
 
@@ -1656,8 +1674,8 @@ function postseasonLabel(years, allYears, round) {
 
 // Sums the postseason cache client-side over whichever years/round are selected — same idea as
 // fetchRange/fetchSince above, since the API has no endpoint that combines postseason years itself.
-function buildPostseasonGraphicData(row, years, allYears, round) {
-  const group = wantsPitching(row) && !wantsBatting(row) ? 'pitching' : 'hitting';
+function buildPostseasonGraphicData(row, years, allYears, round, forcedGroup) {
+  const group = forcedGroup || (wantsPitching(row) && !wantsBatting(row) ? 'pitching' : 'hitting');
   const byYear = modalPostseasonYears[group];
   if (!byYear || !byYear.size) return null;
   const yrs = allYears ? [...byYear.keys()] : years.map(Number);
@@ -2050,16 +2068,12 @@ function buildMatchupTableHTML(rows, isPitcherAnchor, oppTeamName) {
     `<div class="modal-empty" style="margin-top:6px">Click a row with career at-bats to push that matchup on air.</div>`;
 }
 
-async function paintTeamMatchupBox() {
-  const box = $('teamMatchupBox');
-  if (!box) return;
-  if (!modalMatchupOppTeamId || !modalRow || modalRow.isTeam) { box.hidden = true; box.innerHTML = ''; return; }
-  const pid = modalPid, row = modalRow, oppTeamId = modalMatchupOppTeamId;
-  const isPitcherAnchor = wantsPitching(row) && !wantsBatting(row);
-  const oppTeamName = (teamsById.get(oppTeamId) || {}).name || 'the other team';
+// Loads and wires one hitting-or-pitching matchup table into its own container. Split out so a
+// two-way anchor can get both a "vs Pitchers" (hitting) and a "vs Batters" (pitching) table at
+// once, rather than only whichever single role isPitcherAnchor used to pick.
+async function loadTeamMatchupSection(container, pid, row, oppTeamId, oppTeamName, isPitcherAnchor) {
   const pool = eligiblePool(oppTeamId, !isPitcherAnchor);
-  box.hidden = false;
-  box.innerHTML = `<h3>Career vs. ${oppTeamName} ${isPitcherAnchor ? 'Batters' : 'Pitchers'}</h3>` +
+  container.innerHTML = `<h3>Career vs. ${oppTeamName} ${isPitcherAnchor ? 'Batters' : 'Pitchers'}</h3>` +
     `<div class="modal-empty">Loading ${pool.length} matchups\u2026</div>`;
   const group = isPitcherAnchor ? 'pitching' : 'hitting';
   const rows = await Promise.all(pool.map(async opp => {
@@ -2070,18 +2084,38 @@ async function paintTeamMatchupBox() {
   if (modalPid !== pid || modalMatchupOppTeamId !== oppTeamId) return;   // selection changed mid-flight
   rows.sort((a, b) => (+((b.st || {}).atBats) || 0) - (+((a.st || {}).atBats) || 0)
     || a.opp.name.localeCompare(b.opp.name));
-  box.innerHTML = buildMatchupTableHTML(rows, isPitcherAnchor, oppTeamName);
-  box.querySelectorAll('tr.matchup-row:not(.dim)').forEach((tr, i) => {
+  container.innerHTML = buildMatchupTableHTML(rows, isPitcherAnchor, oppTeamName);
+  container.querySelectorAll('tr.matchup-row:not(.dim)').forEach((tr, i) => {
     tr.onclick = async () => {
       const { opp } = rows[i];
-      const data = await buildMatchupData(pid, row, opp.id, opp.name).catch(() => null);
+      const data = await buildMatchupData(pid, row, opp.id, opp.name, opp.pos).catch(() => null);
       if (!data) return;
-      box.querySelectorAll('tr.matchup-row.on').forEach(x => x.classList.remove('on'));
+      container.querySelectorAll('tr.matchup-row.on').forEach(x => x.classList.remove('on'));
       tr.classList.add('on');
       pushOnAir(pid, isPitcherAnchor ? 'pit' : 'bat', row, data);
       $('modalDlNote').textContent = `On air: ${data.label}`;
     };
   });
+}
+
+async function paintTeamMatchupBox() {
+  const box = $('teamMatchupBox');
+  if (!box) return;
+  if (!modalMatchupOppTeamId || !modalRow || modalRow.isTeam) { box.hidden = true; box.innerHTML = ''; return; }
+  const pid = modalPid, row = modalRow, oppTeamId = modalMatchupOppTeamId;
+  const oppTeamName = (teamsById.get(oppTeamId) || {}).name || 'the other team';
+  box.hidden = false;
+  if (isTwoWay(row)) {
+    // Both directions at once: his hitting vs. their pitchers, and his pitching vs. their batters.
+    box.innerHTML = `<div id="teamMatchupBat" style="margin-bottom:14px"></div><div id="teamMatchupPit"></div>`;
+    await Promise.all([
+      loadTeamMatchupSection($('teamMatchupBat'), pid, row, oppTeamId, oppTeamName, false),
+      loadTeamMatchupSection($('teamMatchupPit'), pid, row, oppTeamId, oppTeamName, true),
+    ]);
+    return;
+  }
+  const isPitcherAnchor = wantsPitching(row) && !wantsBatting(row);
+  await loadTeamMatchupSection(box, pid, row, oppTeamId, oppTeamName, isPitcherAnchor);
 }
 
 // =====================================================================================
@@ -2451,14 +2485,28 @@ function wireModalExtras() {
   if (isTeam) return;
 
   const row = $('lrRow');
+  const twoWay = isTwoWay(modalRow);
+  // A two-way player needs a hitting AND a pitching version of the L/R split on-air push (each
+  // push is still a single graphic \u2014 "keep separate pushes" \u2014 so this offers both as distinct
+  // buttons rather than trying to cram both stat lines into one graphic).
+  row.innerHTML = twoWay
+    ? `<button type="button" class="tf-pill" data-lr="season" data-group="hitting">Season L/R (Hitting)</button>
+       <button type="button" class="tf-pill" data-lr="season" data-group="pitching">Season L/R (Pitching)</button>
+       <button type="button" class="tf-pill" data-lr="career" data-group="hitting">Career L/R (Hitting)</button>
+       <button type="button" class="tf-pill" data-lr="career" data-group="pitching">Career L/R (Pitching)</button>
+       <button type="button" class="tf-pill" id="rankFind">Find Notable Rankings</button>`
+    : `<button type="button" class="tf-pill" data-lr="season">Season L/R Split</button>
+       <button type="button" class="tf-pill" data-lr="career">Career L/R Split</button>
+       <button type="button" class="tf-pill" id="rankFind">Find Notable Rankings</button>`;
   row.querySelectorAll('button[data-lr]').forEach(b => {
     b.onclick = async () => {
-      const pid = modalPid, r = modalRow;
+      const pid = modalPid, r = modalRow, forcedGroup = b.dataset.group || null;
       $('modalDlNote').textContent = 'Loading L/R split\u2026';
-      const data = await buildLRCompareData(pid, r, b.dataset.lr).catch(() => null);
+      const data = await buildLRCompareData(pid, r, b.dataset.lr, forcedGroup).catch(() => null);
       if (modalPid !== pid) return;
       if (!data) { $('modalDlNote').textContent = 'No lefty/righty split available for this player.'; return; }
-      pushCustomGraphic(data, wantsPitching(r) && !wantsBatting(r) ? 'pit' : 'bat');
+      const isPit = forcedGroup ? forcedGroup === 'pitching' : (wantsPitching(r) && !wantsBatting(r));
+      pushCustomGraphic(data, isPit ? 'pit' : 'bat');
     };
   });
 
@@ -2468,14 +2516,15 @@ function wireModalExtras() {
     box.hidden = false;
     box.innerHTML = '<span class="modal-empty">Checking leaderboards\u2026</span>';
     const isPit = wantsPitching(r) && !wantsBatting(r);
-    const hits = await findNotableRankings(pid, isPit).catch(() => []);
+    // Two-way: check both hitting and pitching leaderboards at once, in a single combined list.
+    const hits = await findNotableRankings(pid, isPit, twoWay).catch(() => []);
     if (modalPid !== pid) return;
     if (!hits.length) { box.innerHTML = '<span class="modal-empty">Not top 10 in any tracked category.</span>'; return; }
     box.innerHTML = '';
     hits.forEach(h => {
       const b = el('button', 'tf-pill', `${ordinal(h.rank)} ${h.scope} ${h.label}`);
       b.type = 'button';
-      b.onclick = () => pushCustomGraphic(buildRankGraphicData(h), isPit ? 'pit' : 'bat');
+      b.onclick = () => pushCustomGraphic(buildRankGraphicData(h), h.group ? (h.group === 'pitching' ? 'pit' : 'bat') : (isPit ? 'pit' : 'bat'));
       box.appendChild(b);
     });
   };
@@ -2536,15 +2585,27 @@ function wireModalExtras() {
       yearsRow.innerHTML = '<span class="modal-empty">No postseason history found.</span>';
       return;
     }
+    // Two-way: split "Apply" into a hitting and a pitching push, same reasoning as the L/R
+    // split buttons above — one graphic per push, so offer both sides as distinct buttons.
+    const applyBtnsHTML = twoWay
+      ? `<button type="button" class="tf-pill" id="postseasonApplyBat" data-group="hitting" disabled>Apply (Hitting)</button>
+         <button type="button" class="tf-pill" id="postseasonApplyPit" data-group="pitching" disabled>Apply (Pitching)</button>`
+      : `<button type="button" class="tf-pill" id="postseasonApply" disabled>Apply</button>`;
     yearsRow.innerHTML = '<label>Postseason years</label>' +
       `<button type="button" class="tf-pill" data-year="all">All Years</button>` +
       years.map(y => `<button type="button" class="tf-pill" data-year="${y}">${y}</button>`).join('') +
-      `<button type="button" class="tf-pill" id="postseasonApply" disabled>Apply</button>`;
-    const applyBtn = yearsRow.querySelector('#postseasonApply');
+      applyBtnsHTML;
+    const applyBtns = [...yearsRow.querySelectorAll('button[id^="postseasonApply"]')];
     const syncApply = () => {
       const n = modalSelectedPostseasonYears.size;
-      applyBtn.disabled = !modalPostseasonAllYears && !n;
-      applyBtn.textContent = n > 1 ? `Apply (${n})` : 'Apply';
+      const disabled = !modalPostseasonAllYears && !n;
+      const suffix = n > 1 ? ` (${n})` : '';
+      applyBtns.forEach(b => {
+        b.disabled = disabled;
+        b.textContent = b.dataset.group === 'hitting' ? `Apply (Hitting)${suffix}`
+          : b.dataset.group === 'pitching' ? `Apply (Pitching)${suffix}`
+          : n > 1 ? `Apply (${n})` : 'Apply';
+      });
     };
     yearsRow.querySelectorAll('button[data-year]').forEach(b => {
       b.onclick = () => {
@@ -2564,14 +2625,18 @@ function wireModalExtras() {
         syncApply();
       };
     });
-    applyBtn.onclick = () => {
-      if (!modalPostseasonAllYears && !modalSelectedPostseasonYears.size) return;
-      const r2 = modalRow;
-      const years2 = [...modalSelectedPostseasonYears];
-      const data2 = buildPostseasonGraphicData(r2, years2, modalPostseasonAllYears, modalPostseasonRound);
-      if (!data2) { $('modalDlNote').textContent = 'No postseason stats for that selection.'; return; }
-      pushCustomGraphic(data2, wantsPitching(r2) && !wantsBatting(r2) ? 'pit' : 'bat');
-    };
+    applyBtns.forEach(b => {
+      b.onclick = () => {
+        if (!modalPostseasonAllYears && !modalSelectedPostseasonYears.size) return;
+        const r2 = modalRow;
+        const years2 = [...modalSelectedPostseasonYears];
+        const forcedGroup = b.dataset.group || null;
+        const data2 = buildPostseasonGraphicData(r2, years2, modalPostseasonAllYears, modalPostseasonRound, forcedGroup);
+        if (!data2) { $('modalDlNote').textContent = 'No postseason stats for that selection.'; return; }
+        const isPit = forcedGroup ? forcedGroup === 'pitching' : (wantsPitching(r2) && !wantsBatting(r2));
+        pushCustomGraphic(data2, isPit ? 'pit' : 'bat');
+      };
+    });
   })();
 
   // opponent search hits the live people-search API (same as the global search box), so it
@@ -2599,10 +2664,13 @@ function wireModalExtras() {
         b.onclick = async () => {
           const pid = modalPid, r = modalRow;
           $('modalDlNote').textContent = 'Loading matchup\u2026';
-          const data = await buildMatchupData(pid, r, op.id, op.name).catch(() => null);
+          // op.pos picks the right side of a two-way subject (his hitting vs. a pitcher opponent,
+          // his pitching vs. a batter opponent); irrelevant and ignored for single-role players.
+          const data = await buildMatchupData(pid, r, op.id, op.name, op.pos).catch(() => null);
           if (modalPid !== pid) return;
           if (!data) { $('modalDlNote').textContent = `No career matchup data vs. ${op.name}.`; return; }
-          pushCustomGraphic(data, wantsPitching(r) && !wantsBatting(r) ? 'pit' : 'bat');
+          const isPit = isTwoWay(r) ? roleVs(op.pos) === 'pitching' : (wantsPitching(r) && !wantsBatting(r));
+          pushCustomGraphic(data, isPit ? 'pit' : 'bat');
         };
         box.appendChild(b);
       });

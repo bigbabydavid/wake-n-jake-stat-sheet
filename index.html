@@ -490,6 +490,10 @@ const jCache = new Map();
 const jc = u => (jCache.has(u) ? jCache.get(u) : (jCache.set(u, j(u)), jCache.get(u)));
 const $ = id => document.getElementById(id);
 const el = (t, cls, txt) => { const e = document.createElement(t); if(cls) e.className = cls; if(txt != null) e.textContent = txt; return e; };
+// Strips accents/diacritics so search isn't dependent on typing them correctly —
+// "Jesus" should find "Jesús", "Nunez" should find "Núñez", etc.
+const foldAccents = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '');
+const searchKey = s => foldAccents(String(s || '')).toLowerCase();
 
 // ---- control ↔ display link ----
 // The OBS Browser Source runs in its own isolated browser process, so localStorage and
@@ -572,10 +576,31 @@ function populateTeamSelect(divShortFilter) {
 async function loadPlayerIndex(year) {
   const d = await j(`${API}/sports/1/players?season=${year}`);
   allPlayers = (d.people || []).map(p => ({
-    id: p.id, name: p.fullName, pos: (p.primaryPosition && p.primaryPosition.abbreviation) || '',
+    id: p.id, name: p.fullName, nameKey: searchKey(p.fullName),
+    pos: (p.primaryPosition && p.primaryPosition.abbreviation) || '',
     number: p.primaryNumber || '', teamId: p.currentTeam ? p.currentTeam.id : null,
     teamName: p.currentTeam ? p.currentTeam.name : '',
   })).filter(p => p.teamId);
+}
+
+// Live, season-independent name search against MLB's full people database — this is what
+// backs the search box and the "Career vs. opponent" lookup, so typing a name finds a player
+// even if they're retired/inactive and never appear in the current season's team-roster index
+// that powers directory/roster browsing (allPlayers, above).
+let __searchApiCache = new Map();
+async function searchPlayersAPI(query) {
+  const key = query.trim().toLowerCase();
+  if (!key) return [];
+  if (__searchApiCache.has(key)) return __searchApiCache.get(key);
+  const d = await j(`${API}/people/search?names=${encodeURIComponent(query.trim())}&hydrate=currentTeam`);
+  const results = (d.people || []).map(p => ({
+    id: p.id, name: p.fullName, nameKey: searchKey(p.fullName),
+    pos: (p.primaryPosition && p.primaryPosition.abbreviation) || '',
+    number: p.primaryNumber || '', teamId: p.currentTeam ? p.currentTeam.id : null,
+    teamName: p.currentTeam ? p.currentTeam.name : '', active: !!p.active,
+  }));
+  __searchApiCache.set(key, results);
+  return results;
 }
 
 // currentTeam frequently comes back with an id but no name, so always resolve the display name
@@ -966,12 +991,31 @@ let rosterState = null;       // {team, year, rows} — cached so column-header 
 let searchState = null;       // {query, teamGroups, total, limit} — same, for search results
 let sortState = { table: null, key: null, dir: 1 };
 
-function renderSearchResults(query) {
-  const q = query.trim().toLowerCase();
-  if (!q) { searchState = null; renderLanding(); return; }
+let __searchGen = 0;
+async function renderSearchResults(query) {
+  const trimmed = query.trim();
+  if (!trimmed) { searchState = null; renderLanding(); return; }
   currentView = 'search';
   setTeamBadge(null);
-  let matches = allPlayers.filter(p => p.name.toLowerCase().includes(q));
+  if (trimmed.length < 2) {
+    searchState = null;
+    addTable(`Search — "${query}"`, null, 'Keep typing… (2+ characters)');
+    return;
+  }
+  const gen = ++__searchGen;
+  say('Searching…');
+  let matches;
+  try {
+    // Live lookup against MLB's full people database — not limited to the selected season's
+    // rosters, so retired/inactive players turn up too, and it's accent-insensitive on its own.
+    matches = await searchPlayersAPI(trimmed);
+  } catch (e) {
+    if (gen !== __searchGen) return;
+    searchState = null;
+    addTable(`Search — "${query}"`, null, 'Search failed — try again.');
+    return;
+  }
+  if (gen !== __searchGen) return; // superseded by a newer search
   if (posFilter) matches = matches.filter(p => p.pos === posFilter);
   say('');
   if (!matches.length) { searchState = null; addTable(`Search — "${query}"`, null,
@@ -1008,7 +1052,7 @@ function paintSearch() {
   const active = sortState.table === 'search' ? sortState : null;
   teamGroups.forEach(({ team, players }) => {
     const trG = el('tr', 'group');
-    const tdG = el('td', null, team ? team.name : 'Unknown Team'); tdG.colSpan = 4;
+    const tdG = el('td', null, team ? team.name : 'No current team'); tdG.colSpan = 4;
     trG.appendChild(tdG); tbody.appendChild(trG);
     const rows = active && active.key ? sortRows(players, active.key, active.dir)
                                        : [...players].sort((a, b) => a.name.localeCompare(b.name));
@@ -2474,18 +2518,23 @@ function wireModalExtras() {
     };
   })();
 
-  // opponent search reuses the already-loaded league-wide player index, so it's instant and
-  // needs no extra API calls just to offer suggestions
-  let mDeb = null;
+  // opponent search hits the live people-search API (same as the global search box), so it
+  // finds any player ever in the database — including retired/inactive ones — not just names
+  // on the currently selected season's rosters.
+  let mDeb = null, mGen = 0;
   $('matchupSearch').value = '';
   $('matchupResults').innerHTML = '';
   $('matchupSearch').oninput = () => {
     clearTimeout(mDeb);
-    const q = $('matchupSearch').value.trim().toLowerCase();
-    mDeb = setTimeout(() => {
+    const raw = $('matchupSearch').value.trim();
+    mDeb = setTimeout(() => guard(async () => {
       const box = $('matchupResults');
-      if (q.length < 3) { box.innerHTML = ''; return; }
-      const hits = allPlayers.filter(p => p.name.toLowerCase().includes(q) && String(p.id) !== String(modalPid)).slice(0, 6);
+      if (raw.length < 2) { box.innerHTML = ''; return; }
+      const gen = ++mGen;
+      let hits;
+      try { hits = await searchPlayersAPI(raw); } catch (e) { hits = []; }
+      if (gen !== mGen) return; // superseded by a newer search
+      hits = hits.filter(p => String(p.id) !== String(modalPid)).slice(0, 6);
       box.innerHTML = '';
       if (!hits.length) { box.innerHTML = '<span class="modal-empty">No match.</span>'; return; }
       hits.forEach(op => {
@@ -2501,7 +2550,7 @@ function wireModalExtras() {
         };
         box.appendChild(b);
       });
-    }, 150);
+    })(), 150);
   };
 }
 

@@ -603,6 +603,39 @@ async function searchPlayersAPI(query) {
   return results;
 }
 
+// For a retired/inactive player, the live people/search API returns no current team, so the
+// modal header needs to ask what team+position they held during the specific season being
+// viewed. The `fielding` stats group carries both `team` and `position` per split (unlike
+// `hitting`, which has team but not position), so one call gets us both. Splits arrive in
+// chronological order; the last one is treated as "who they finished the season with," and
+// among that team's splits, the position with the most games played is treated as primary.
+let __seasonTeamPosCache = new Map();
+async function seasonTeamPosition(pid, year) {
+  const key = `${pid}:${year}`;
+  if (__seasonTeamPosCache.has(key)) return __seasonTeamPosCache.get(key);
+  let result = null;
+  try {
+    const d = await j(`${API}/people/${pid}/stats?stats=season&season=${year}&group=fielding`);
+    const splits = (d.stats && d.stats[0] && d.stats[0].splits) || [];
+    if (splits.length) {
+      const last = splits[splits.length - 1];
+      const finishTeamId = last.team && last.team.id;
+      const finishTeamName = last.team && last.team.name;
+      const sameTeamSplits = splits.filter(s => s.team && s.team.id === finishTeamId);
+      let best = sameTeamSplits[0];
+      sameTeamSplits.forEach(s => {
+        const g = (s.stat && s.stat.games) || 0;
+        const bg = (best.stat && best.stat.games) || 0;
+        if (g > bg) best = s;
+      });
+      const posAbbr = (best && ((best.stat && best.stat.position && best.stat.position.abbreviation) || (best.position && best.position.abbreviation))) || '';
+      result = { teamId: finishTeamId || null, teamName: finishTeamName || '', pos: posAbbr };
+    }
+  } catch (e) { result = null; }
+  __seasonTeamPosCache.set(key, result);
+  return result;
+}
+
 // currentTeam frequently comes back with an id but no name, so always resolve the display name
 // from the teams map (which is authoritative) and fall back to whatever the index carried.
 function teamNameFor(p) {
@@ -1058,7 +1091,7 @@ function paintSearch() {
                                        : [...players].sort((a, b) => a.name.localeCompare(b.name));
     rows.forEach(p => {
       const tname = teamNameFor(p);
-      currentIndex.set(String(p.id), { id: p.id, name: p.name, pos: p.pos, number: p.number || '', team: tname, teamId: p.teamId });
+      currentIndex.set(String(p.id), { id: p.id, name: p.name, pos: p.pos, number: p.number || '', team: tname, teamId: p.teamId, isActive: p.active });
       const tr = el('tr'); tr.dataset.pid = p.id;
       tr.appendChild(el('td', 'num', p.number));
       tr.appendChild(el('td', 'name', p.name));
@@ -1779,6 +1812,7 @@ function paintSeasonPicker() {
       if (modalSeasons.has(y)) modalSeasons.delete(y); else modalSeasons.add(y);
       if (!modalSeasons.size) modalSeasons.add(y);   // never leave the scope empty
       paintSeasonPicker(); loadModalStats();   // stays expanded — the list doesn't close under you
+      if (modalRow) refreshModalSub(modalPid, modalRow);
     };
   });
   const seasonsToggle = box.querySelector('#seasonsToggle');
@@ -1833,6 +1867,27 @@ function paintSeasonPicker() {
 
 // oppTeamId is only set when opened from the BvP builder; every other entry point leaves the
 // matchup table hidden.
+// Retired/inactive players never carry a uniform number in the header, and once the modal is
+// scoped to a single season we resolve the team/position actually held that season (defaulting
+// to whoever they finished it with) instead of the blank/stale currentTeam the search API gave us.
+function baseModalSubText(row) {
+  return row.isActive === false
+    ? [row.pos, row.team].filter(Boolean).join(' · ')
+    : [row.number ? `#${row.number}` : '', row.pos, row.team].filter(Boolean).join(' · ');
+}
+async function refreshModalSub(pid, row) {
+  if (row.isActive === false && modalSeasons.size === 1) {
+    const year = [...modalSeasons][0];
+    const info = await seasonTeamPosition(pid, year);
+    if (modalPid !== pid) return;   // modal moved on to another player while we awaited
+    if (info && (info.teamName || info.pos)) {
+      $('modalSub').textContent = [info.pos, info.teamName].filter(Boolean).join(' · ');
+      return;
+    }
+  }
+  $('modalSub').textContent = baseModalSubText(row);
+}
+
 async function openPlayerModal(pid, oppTeamId) {
   const row = currentIndex.get(String(pid));
   if (!row) return;
@@ -1848,7 +1903,8 @@ async function openPlayerModal(pid, oppTeamId) {
   $('modalHeadshot').src = payloadImageURL(pid);
   $('modalHeadshot').classList.remove('is-team');
   $('modalName').textContent = row.name;
-  $('modalSub').textContent = [row.number ? `#${row.number}` : '', row.pos, row.team].filter(Boolean).join(' · ');
+  $('modalSub').textContent = baseModalSubText(row);
+  refreshModalSub(pid, row);   // async — resolves the season-specific team/position for retired players
   $('modalBackdrop').hidden = false;
   // size the preview stage now that the modal has a width, then show current on-air state
   requestAnimationFrame(() => { const pv = previewRoot(); if (pv) fitPreviewStage(pv); });

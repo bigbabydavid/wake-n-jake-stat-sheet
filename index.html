@@ -1524,6 +1524,60 @@ async function buildLRCompareData(pid, row, tier, forcedGroup) {
   };
 }
 
+// ---- Runners in scoring position vs. bases empty --------------------------------------------
+// Same shape and API pattern as the L/R split above (statSplits/careerStatSplits with sitCodes),
+// just a different pair of situation codes: 'risp' (runners in scoring position) vs. 'r0' (bases
+// empty) — a common broadcast pairing ("hitting .283 with RISP, .250 with the bases empty").
+// For a pitcher this is the opposing batters' line in each situation, so it's still meaningful.
+async function buildRISPCompareData(pid, row, tier, forcedGroup) {
+  const isPitcher = forcedGroup ? forcedGroup === 'pitching' : (wantsPitching(row) && !wantsBatting(row));
+  const group = isPitcher ? 'pitching' : 'hitting';
+  const statType = tier === 'career' ? 'careerStatSplits' : 'statSplits';
+  const seasonParam = tier === 'career' ? '' : `&season=${$('season').value}`;
+  const pull = async sit => {
+    const d = await jc(`${statsBase(pid)}/stats?stats=${statType}&sitCodes=${sit}&group=${group}${seasonParam}&sportId=1`).catch(() => null);
+    const sec = d && (d.stats || [])[0];
+    return sec && sec.splits && sec.splits.length ? sec.splits[0].stat : null;
+  };
+  const [risp, empty] = await Promise.all([pull('risp'), pull('r0')]);
+  if (!risp && !empty) return null;
+  const DASH = '—';
+  const extract = st => {
+    if (!st) return { count: 0, cells: [] };
+    if (isPitcher) {
+      return {
+        count: +st.battersFaced || 0,
+        cells: [
+          ['BAA', st.avg != null ? st.avg : DASH],
+          ['OPS AGAINST', st.ops != null ? st.ops : DASH],
+          ['HR', st.homeRuns != null ? +st.homeRuns : DASH],
+          ['K%', kPct(st.strikeOuts, st.battersFaced)],
+          ['BB%', bbPct(st.baseOnBalls, st.battersFaced)],
+        ],
+      };
+    }
+    return {
+      count: +st.plateAppearances || 0,
+      cells: [
+        ['AVG', st.avg != null ? st.avg : DASH],
+        ['OPS', st.ops != null ? st.ops : DASH],
+        ['HR', st.homeRuns != null ? +st.homeRuns : DASH],
+        ['RBI', st.rbi != null ? +st.rbi : DASH],
+        ['K%', kPct(st.strikeOuts, st.plateAppearances)],
+        ['BB%', bbPct(st.baseOnBalls, st.plateAppearances)],
+      ],
+    };
+  };
+  const countWord = 'PA';
+  const tierLabel = tier === 'career' ? 'CAREER' : `${$('season').value} SEASON`;
+  const label = `${tierLabel} · RISP SPLIT`;
+  return {
+    label, splitLabel: label, splitCompare: true, isPitcher, countWord,
+    left: { label: 'RISP', ...extract(risp) },
+    right: { label: 'Bases Empty', ...extract(empty) },
+  };
+}
+
 // ---- Career vs. a specific opponent -------------------------------------------------------
 async function buildMatchupData(pid, row, oppId, oppName, oppPos) {
   // A two-way subject's group depends on the opponent: his hitting line applies against a
@@ -2494,9 +2548,15 @@ function wireModalExtras() {
        <button type="button" class="tf-pill" data-lr="season" data-group="pitching">Season L/R (Pitching)</button>
        <button type="button" class="tf-pill" data-lr="career" data-group="hitting">Career L/R (Hitting)</button>
        <button type="button" class="tf-pill" data-lr="career" data-group="pitching">Career L/R (Pitching)</button>
+       <button type="button" class="tf-pill" data-risp="season" data-group="hitting">Season RISP (Hitting)</button>
+       <button type="button" class="tf-pill" data-risp="season" data-group="pitching">Season RISP (Pitching)</button>
+       <button type="button" class="tf-pill" data-risp="career" data-group="hitting">Career RISP (Hitting)</button>
+       <button type="button" class="tf-pill" data-risp="career" data-group="pitching">Career RISP (Pitching)</button>
        <button type="button" class="tf-pill" id="rankFind">Find Notable Rankings</button>`
     : `<button type="button" class="tf-pill" data-lr="season">Season L/R Split</button>
        <button type="button" class="tf-pill" data-lr="career">Career L/R Split</button>
+       <button type="button" class="tf-pill" data-risp="season">Season RISP Split</button>
+       <button type="button" class="tf-pill" data-risp="career">Career RISP Split</button>
        <button type="button" class="tf-pill" id="rankFind">Find Notable Rankings</button>`;
   row.querySelectorAll('button[data-lr]').forEach(b => {
     b.onclick = async () => {
@@ -2505,6 +2565,17 @@ function wireModalExtras() {
       const data = await buildLRCompareData(pid, r, b.dataset.lr, forcedGroup).catch(() => null);
       if (modalPid !== pid) return;
       if (!data) { $('modalDlNote').textContent = 'No lefty/righty split available for this player.'; return; }
+      const isPit = forcedGroup ? forcedGroup === 'pitching' : (wantsPitching(r) && !wantsBatting(r));
+      pushCustomGraphic(data, isPit ? 'pit' : 'bat');
+    };
+  });
+  row.querySelectorAll('button[data-risp]').forEach(b => {
+    b.onclick = async () => {
+      const pid = modalPid, r = modalRow, forcedGroup = b.dataset.group || null;
+      $('modalDlNote').textContent = 'Loading RISP split\u2026';
+      const data = await buildRISPCompareData(pid, r, b.dataset.risp, forcedGroup).catch(() => null);
+      if (modalPid !== pid) return;
+      if (!data) { $('modalDlNote').textContent = 'No RISP split available for this player.'; return; }
       const isPit = forcedGroup ? forcedGroup === 'pitching' : (wantsPitching(r) && !wantsBatting(r));
       pushCustomGraphic(data, isPit ? 'pit' : 'bat');
     };

@@ -1589,15 +1589,14 @@ async function buildMatchupData(pid, row, oppId, oppName, oppPos) {
   const st = sec && sec.splits && sec.splits.length ? sec.splits[0].stat : null;
   if (!st) return null;
   const label = `CAREER VS. ${oppName.toUpperCase()}`;
-  if (!isPitcher) {
-    // raw K/BB counts beat rates at matchup sample sizes — "3 K" reads better than "33%"
-    return { label, splitLabel: label, hitLine: `${st.hits}-for-${st.atBats}`, cells: [
-      ['AVG', st.avg], ['OBP', st.obp], ['SLG', st.slg], ['OPS', st.ops],
-      ['K', +st.strikeOuts || 0], ['BB', +st.baseOnBalls || 0], ['HR', +st.homeRuns || 0]] };
-  }
-  return { label, splitLabel: label, hitLine: `${st.hits}-for-${st.atBats} allowed`, cells: [
-    ['IP', st.inningsPitched], ['H', st.hits], ['BB', st.baseOnBalls],
-    ['K', st.strikeOuts], ['HR', st.homeRuns], ['AVG', st.avg]] };
+  // Always present a batter-vs-pitcher matchup as the hitter's slash line (AVG/OBP/SLG/OPS,
+  // hits-for-AB) — the format anyone recognizes from a broadcast graphic. The pitching-group
+  // vsPlayer response carries the exact same batter-shaped fields (it's literally "how this
+  // batter has hit against this pitcher"), so no branching is needed: a subject who's a pitcher
+  // still gets his opponent's hitting line here, not an unfamiliar IP/H/BB/K "allowed" line.
+  return { label, splitLabel: label, hitLine: `${st.hits}-for-${st.atBats}`, cells: [
+    ['AVG', st.avg], ['OBP', st.obp], ['SLG', st.slg], ['OPS', st.ops],
+    ['K', +st.strikeOuts || 0], ['BB', +st.baseOnBalls || 0], ['HR', +st.homeRuns || 0]] };
 }
 
 // ---- Notable rankings ---------------------------------------------------------------------
@@ -2146,7 +2145,7 @@ async function loadTeamMatchupSection(container, pid, row, oppTeamId, oppTeamNam
       if (!data) return;
       container.querySelectorAll('tr.matchup-row.on').forEach(x => x.classList.remove('on'));
       tr.classList.add('on');
-      pushOnAir(pid, isPitcherAnchor ? 'pit' : 'bat', row, data);
+      pushOnAir(pid, 'bat', row, data);   // always a hitter's slash line now, regardless of anchor role
       $('modalDlNote').textContent = `On air: ${data.label}`;
     };
   });
@@ -2740,8 +2739,7 @@ function wireModalExtras() {
           const data = await buildMatchupData(pid, r, op.id, op.name, op.pos).catch(() => null);
           if (modalPid !== pid) return;
           if (!data) { $('modalDlNote').textContent = `No career matchup data vs. ${op.name}.`; return; }
-          const isPit = isTwoWay(r) ? roleVs(op.pos) === 'pitching' : (wantsPitching(r) && !wantsBatting(r));
-          pushCustomGraphic(data, isPit ? 'pit' : 'bat');
+          pushCustomGraphic(data, 'bat');   // always a hitter's slash line now, regardless of subject's role
         };
         box.appendChild(b);
       });

@@ -11,15 +11,6 @@
    "note": "Most of the deal is deferred, so the luxury-tax value is about $46.1M a year. Per-season figures here are the flat $70M AAV.",
    "source": "entered from memory, verify"
   },
-  "665742": {
-   "name": "Juan Soto",
-   "total": 765000000,
-   "years": 15,
-   "start": 2025,
-   "end": 2039,
-   "aav": 51000000,
-   "source": "entered from memory, verify"
-  },
   "641355": {
    "name": "Cody Bellinger",
    "summary": "5 yr, $162.5M (2026-30); can opt out after 2027 or 2028",
@@ -1915,6 +1906,637 @@
     "2029": "FREE AGENT"
    },
    "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "665742": {
+   "name": "Juan Soto",
+   "summary": "15 yr, $765M (2025-39); can opt out after 2029",
+   "total": 765000000,
+   "years": 15,
+   "start": 2025,
+   "end": 2039,
+   "aav": 51000000,
+   "seasons": {
+    "2026": 61875000,
+    "2027": 57500000,
+    "2028": 61875000,
+    "2029": 61875000,
+    "2030": 46000000,
+    "2031": 46000000,
+    "2032": 46000000
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "666182": {
+   "name": "Bo Bichette",
+   "summary": "3 yr, $126M (2026-28), 2027-28 player options",
+   "total": 126000000,
+   "years": 3,
+   "start": 2026,
+   "end": 2028,
+   "aav": 42000000,
+   "seasons": {
+    "2026": 42000000,
+    "2027": 42000000,
+    "2028": 42000000
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "596019": {
+   "name": "Francisco Lindor",
+   "summary": "10 yr, $341M (2022-31)",
+   "total": 341000000,
+   "years": 10,
+   "start": 2022,
+   "end": 2031,
+   "aav": 31900000,
+   "seasons": {
+    "2026": 34100000,
+    "2027": 34100000,
+    "2028": 34100000,
+    "2029": 34100000,
+    "2030": 34100000,
+    "2031": 34100000
+   },
+   "tags": {
+    "2032": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "543760": {
+   "name": "Marcus Semien",
+   "summary": "7 yr, $175M (2022-28)",
+   "total": 175000000,
+   "years": 7,
+   "start": 2022,
+   "end": 2028,
+   "aav": 24000000,
+   "seasons": {
+    "2026": 26000000,
+    "2027": 26000000,
+    "2028": 20000000
+   },
+   "tags": {
+    "2029": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "640455": {
+   "name": "Sean Manaea",
+   "summary": "3 yr, $75M (2025-27); deferrals lower AAV",
+   "total": 75000000,
+   "years": 3,
+   "start": 2025,
+   "end": 2027,
+   "aav": 22009731,
+   "seasons": {
+    "2026": 25000000,
+    "2027": 25000000
+   },
+   "tags": {
+    "2028": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "593871": {
+   "name": "Jorge Polanco",
+   "summary": "2 yr, $40M (2026-27)",
+   "total": 40000000,
+   "years": 2,
+   "start": 2026,
+   "end": 2027,
+   "aav": 20000000,
+   "seasons": {
+    "2026": 17000000,
+    "2027": 23000000
+   },
+   "tags": {
+    "2028": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "642207": {
+   "name": "Devin Williams",
+   "summary": "3 yr, $51M (2026-28); deferrals lower AAV",
+   "total": 51000000,
+   "years": 3,
+   "start": 2026,
+   "end": 2028,
+   "aav": 15004460,
+   "seasons": {
+    "2026": 17000000,
+    "2027": 17000000,
+    "2028": 17000000
+   },
+   "tags": {
+    "2029": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "673540": {
+   "name": "Kodai Senga",
+   "summary": "5 yr, $75M (2023-27; 2026 opt out declined), 2028 club option",
+   "total": 75000000,
+   "years": 5,
+   "start": 2023,
+   "end": 2027,
+   "aav": 15000000,
+   "seasons": {
+    "2026": 14000000,
+    "2027": 14000000,
+    "2028": 15000000
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "620443": {
+   "name": "Luis Torrens",
+   "summary": "1 yr, $2.275M (2026); 2 yr, $11.5M (2027-28)",
+   "total": 2275000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 2275000,
+   "seasons": {
+    "2026": 2275000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "656731": {
+   "name": "Tylor Megill",
+   "summary": "1 yr, $2.5M (2026)",
+   "total": 2500000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 2500000,
+   "seasons": {
+    "2026": 2500000
+   },
+   "tags": {
+    "2027": "ARB 3",
+    "2028": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "672335": {
+   "name": "Cionel Pérez",
+   "summary": "1 yr, $1.229M (2026); $1.9M, prorated",
+   "total": 1229000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 1229000,
+   "seasons": {
+    "2026": 1229412
+   },
+   "tags": {
+    "2027": "ARB 3",
+    "2028": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "666624": {
+   "name": "Christopher Morel",
+   "summary": "1 yr, $175.187k (2026); $780k, prorated",
+   "total": 175187,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 175187,
+   "seasons": {
+    "2026": 175187
+   },
+   "tags": {
+    "2027": "ARB 2",
+    "2028": "ARB 3",
+    "2029": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "682626": {
+   "name": "Francisco Alvarez",
+   "summary": "1 yr, $2.4M (2026)",
+   "total": 2400000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 2400000,
+   "seasons": {
+    "2026": 2400000
+   },
+   "tags": {
+    "2027": "ARB 2",
+    "2028": "ARB 3",
+    "2029": "ARB 4",
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "657585": {
+   "name": "Reed Garrett",
+   "summary": "1 yr, $1.3M (2026)",
+   "total": 1300000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 1300000,
+   "seasons": {
+    "2026": 1300000
+   },
+   "tags": {
+    "2027": "ARB 2",
+    "2028": "ARB 3",
+    "2029": "ARB 4",
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "665506": {
+   "name": "Cristian Pache",
+   "summary": "1 yr, $367.647k (2026); $1.25M, prorated",
+   "total": 367647,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 367647,
+   "seasons": {
+    "2026": 367647
+   },
+   "tags": {
+    "2027": "ARB 1",
+    "2028": "ARB 2",
+    "2029": "ARB 3",
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "668901": {
+   "name": "Mark Vientos",
+   "summary": "1 yr, $813.75k (2026)",
+   "total": 813750,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 813750,
+   "seasons": {
+    "2026": 813750
+   },
+   "tags": {
+    "2027": "ARB 1",
+    "2028": "ARB 2",
+    "2029": "ARB 3",
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "683146": {
+   "name": "Brett Baty",
+   "summary": "1 yr, $811.5k (2026)",
+   "total": 811500,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 811500,
+   "seasons": {
+    "2026": 811500
+   },
+   "tags": {
+    "2027": "ARB 1",
+    "2028": "ARB 2",
+    "2029": "ARB 3",
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "681810": {
+   "name": "Austin Warren",
+   "summary": "1 yr, $808.5k (2026)",
+   "total": 808500,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 808500,
+   "seasons": {
+    "2026": 808500
+   },
+   "tags": {
+    "2027": "ARB 1",
+    "2028": "ARB 2",
+    "2029": "ARB 3",
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "673380": {
+   "name": "Dedniel Núñez",
+   "summary": "1 yr, $792k (2026)",
+   "total": 792000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 792000,
+   "seasons": {
+    "2026": 792000
+   },
+   "tags": {
+    "2027": "ARB 1",
+    "2028": "ARB 2",
+    "2029": "ARB 3",
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "650960": {
+   "name": "Daniel Duarte",
+   "summary": "1 yr, $950k (2026)",
+   "total": 950000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 950000,
+   "seasons": {
+    "2026": 950000
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "ARB 1",
+    "2029": "ARB 2",
+    "2030": "ARB 3",
+    "2031": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "668964": {
+   "name": "Tobias Myers",
+   "summary": "1 yr, $806.3k (2026)",
+   "total": 806300,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 806300,
+   "seasons": {
+    "2026": 806300
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "ARB 1",
+    "2029": "ARB 2",
+    "2030": "ARB 3",
+    "2031": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "681035": {
+   "name": "Christian Scott",
+   "summary": "1 yr, $787k (2026)",
+   "total": 787000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 787000,
+   "seasons": {
+    "2026": 787000
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "ARB 1",
+    "2029": "ARB 2",
+    "2030": "ARB 3",
+    "2031": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "676724": {
+   "name": "Jared Young",
+   "summary": "1 yr, $1.15M (2026)",
+   "total": 1150000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 1150000,
+   "seasons": {
+    "2026": 1150000
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "ARB 1",
+    "2029": "ARB 2",
+    "2030": "ARB 3",
+    "2031": "ARB 4",
+    "2032": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "690997": {
+   "name": "Nolan McLean",
+   "summary": "1 yr, $791.5k (2026)",
+   "total": 791500,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 791500,
+   "seasons": {
+    "2026": 791500
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "Pre-ARB",
+    "2029": "ARB 1",
+    "2030": "ARB 2",
+    "2031": "ARB 3",
+    "2032": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "701807": {
+   "name": "Carson Benge",
+   "summary": "1 yr, $780k (2026)",
+   "total": 780000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 780000,
+   "seasons": {
+    "2026": 780000
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "Pre-ARB",
+    "2029": "ARB 1",
+    "2030": "ARB 2",
+    "2031": "ARB 3",
+    "2032": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "681320": {
+   "name": "Nate Lavender",
+   "summary": "1 yr, $780k (2026)",
+   "total": 780000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 780000,
+   "seasons": {
+    "2026": 780000
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "Pre-ARB",
+    "2029": "ARB 1",
+    "2030": "ARB 2",
+    "2031": "ARB 3",
+    "2032": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "805999": {
+   "name": "A.J. Ewing",
+   "summary": "1 yr, $780k (2026)",
+   "total": 780000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 780000,
+   "seasons": {
+    "2026": 780000
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "Pre-ARB",
+    "2029": "Pre-ARB",
+    "2030": "ARB 1",
+    "2031": "ARB 2",
+    "2032": "ARB 3"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "804267": {
+   "name": "Zac Thornton",
+   "summary": "1 yr, $760k (2026)",
+   "total": 760000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 760000,
+   "seasons": {
+    "2026": 760000
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "Pre-ARB",
+    "2029": "Pre-ARB",
+    "2030": "ARB 1",
+    "2031": "ARB 2",
+    "2032": "ARB 3"
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "593423": {
+   "name": "Frankie Montas",
+   "summary": "2 yr, $34M (2025-26)",
+   "total": 34000000,
+   "years": 2,
+   "start": 2025,
+   "end": 2026,
+   "aav": 17000000,
+   "seasons": {
+    "2026": 17000000
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "472610": {
+   "name": "Luis García",
+   "summary": "1 yr, $1.75M (2026)",
+   "total": 1750000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 1750000,
+   "seasons": {
+    "2026": 1750000
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "669004": {
+   "name": "MJ Melendez",
+   "summary": "1 yr, $1.5M (2026); split contract; $425k in minors",
+   "total": 1500000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 1500000,
+   "seasons": {
+    "2026": 1500000
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "628451": {
+   "name": "Andy Ibáñez",
+   "summary": "1 yr, $1.2M (2026)",
+   "total": 1200000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 1200000,
+   "seasons": {
+    "2026": 1200000
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "518886": {
+   "name": "Craig Kimbrel",
+   "summary": "1 yr, $588.235k (2026); $2.5M, prorated",
+   "total": 588235,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 588235,
+   "seasons": {
+    "2026": 588235
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "660644": {
+   "name": "Vidal Bruján",
+   "summary": "1 yr, $587.968k (2026); $850k split contract, prorated",
+   "total": 587968,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 587968,
+   "seasons": {
+    "2026": 587968
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "502054": {
+   "name": "Tommy Pham",
+   "summary": "1 yr, $204.545k (2026); $2.25M, prorated",
+   "total": 204545,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 204545,
+   "seasons": {
+    "2026": 204545
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "596103": {
+   "name": "Austin Slater",
+   "summary": "1 yr, $139.037k (2026); $1M, prorated",
+   "total": 139037,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 139037,
+   "seasons": {
+    "2026": 139037
+   },
+   "source": "FanGraphs Roster Resource, Mets payroll 2026"
   }
  }
 }

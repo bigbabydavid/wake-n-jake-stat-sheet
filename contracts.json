@@ -1,0 +1,18 @@
+{
+  "_readme": "Keyed by MLB player id (the number in statsapi.mlb.com/api/v1/people/<id>). Required: total (dollars) and either years or start+end. Optional: aav (defaults to total/years), seasons (a map of year -> dollars, used for the per-season AAV button; defaults to a flat aav across start..end), note (shown under the summary). The three entries below are starter examples entered from memory: verify them, then replace or extend.",
+  "players": {
+    "660271": {
+      "name": "Shohei Ohtani",
+      "total": 700000000, "years": 10, "start": 2024, "end": 2033, "aav": 70000000,
+      "note": "Most of the deal is deferred, so the luxury-tax value is about $46.1M a year. Per-season figures here are the flat $70M AAV."
+    },
+    "592450": {
+      "name": "Aaron Judge",
+      "total": 360000000, "years": 9, "start": 2023, "end": 2031, "aav": 40000000
+    },
+    "665742": {
+      "name": "Juan Soto",
+      "total": 765000000, "years": 15, "start": 2025, "end": 2039, "aav": 51000000
+    }
+  }
+}

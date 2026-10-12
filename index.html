@@ -1159,6 +1159,9 @@ let modalBat = null, modalPit = null;
 //   {kind:'record'}                    team W-L (team default)
 //   {kind:'recordTile', key}           PCT / HOME / ROAD / RUN DIFF
 let modalSticky = { kind: 'line' };  // currently-loaded stat objects for the active timeframe
+// Opening a player or team never puts anything on air by itself: the modal stays "unarmed" until
+// the user clicks a tab, split, season, month, range or stat, and only then do loads auto-push.
+let modalArmed = false;
 
 // K% (strikeout rate) isn't a field the API hands back pre-computed, but every stat shape we use —
 // season, byDateRange, and the vs-L/R splits — carries the raw counts to derive it ourselves.
@@ -2010,7 +2013,12 @@ function setModalTab(tab) {
 }
 $('modalTabs').onclick = e => {
   const b = e.target.closest('button[data-tab]');
-  if (b && modalPid) setModalTab(b.dataset.tab);
+  if (!b || !modalPid) return;
+  const was = modalTab;
+  setModalTab(b.dataset.tab);
+  // Clicking back to Stats is a request to show stats, so put the current stat line on air.
+  // The Contract tab shows nothing on air until one of its buttons is clicked.
+  if (b.dataset.tab === 'stats' && was === 'contract') { modalArmed = true; autoPushOnAir(); }
 };
 
 async function paintContractPane() {
@@ -2116,6 +2124,7 @@ async function openPlayerModal(pid, oppTeamId) {
   modalMonths = new Set();
   modalMatchupOppTeamId = oppTeamId || null;
   modalSticky = { kind: 'line' };
+  modalArmed = false;        // nothing goes on air until the user clicks something
   seasonsExpanded = false;   // long season lists start collapsed
   modalSeasons = new Set([String($('season').value)]);
   modalSeasonList = [];
@@ -2138,7 +2147,7 @@ async function openPlayerModal(pid, oppTeamId) {
   wireModalExtras();
   if ($('recordBox')) { $('recordBox').hidden = true; $('recordBox').innerHTML = ''; }
   paintTeamMatchupBox();   // async; fills in below the header once the sweep finishes
-  await loadModalStats();
+  await loadModalStats(false);   // loads the numbers for display only; nothing goes on air until a click
   // season history is only needed for the picker, so it loads alongside rather than blocking stats
   const groups = [wantsBatting(row) ? 'hitting' : null, wantsPitching(row) ? 'pitching' : null].filter(Boolean);
   const list = await fetchSeasonList(pid, groups);
@@ -2511,6 +2520,8 @@ async function paintRecordBox() {
   });
 
   // Recount finished — if a record graphic is what's on air, refresh it for this scope.
+  // (Not before the user has picked anything: opening a team must not go on air by itself.)
+  if (!modalArmed) return;
   if (modalSticky.kind === 'record') push(recordSentenceData(modalRow.name, rec, scopeAtStart));
   else if (modalSticky.kind === 'recordTile') {
     const x = subs.find(y => y.k === modalSticky.key);
@@ -2626,6 +2637,7 @@ async function openTeamTotalsModal(team) {
   modalSeasons = new Set([String($('season').value)]);
   modalSeasonList = [];
   modalSticky = { kind: 'record' };   // clubs lead with their record, not a batting line
+  modalArmed = false;                 // nothing goes on air until the user clicks something
   seasonsExpanded = false;   // long season lists start collapsed
   $('modalDlNote').textContent = '';
   $('modalHeadshot').src = teamSpotURL(team.id);
@@ -2643,7 +2655,7 @@ async function openTeamTotalsModal(team) {
   paintTfPills();
   wireModalExtras();
   paintRecordBox();
-  await loadModalStats();
+  await loadModalStats(false);
   const list = await fetchSeasonList(pid, ['hitting', 'pitching']);
   if (modalPid !== pid) return;
   modalSeasonList = list.length ? list : [String($('season').value)];
@@ -2714,7 +2726,9 @@ function paintTfPills() {
   }
 }
 
-async function loadModalStats() {
+// userAction is false only for the load that happens as the modal opens, which must not go on air.
+async function loadModalStats(userAction = true) {
+  if (userAction) modalArmed = true;
   const pid = modalPid, row = modalRow, tf = modalTf, scopeAtStart = scopeLabel();
   // the record block reads the same scope selectors, so keep it in step with every stat reload
   if (row && row.isTeam) paintRecordBox();
@@ -2748,7 +2762,7 @@ async function loadModalStats() {
   $('modalDownloadBat').hidden = !(bat && +bat.atBats > 0);
   $('modalDownloadPit').hidden = !(pit && (+pit.outs > 0 || +pit.battersFaced > 0 || +pit.gamesPlayed > 0));
 
-  autoPushOnAir();
+  if (modalArmed) autoPushOnAir();
 }
 
 // Clicking any stat tile (or a value in the slash line) swaps the graphic to a single-stat

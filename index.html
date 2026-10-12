@@ -426,6 +426,7 @@
       <div class="scope-row" id="matchupResults"></div>
     </div>
     <div id="recordBox" class="record-box" hidden></div>
+    <div id="teamRankBox" class="matchup-box" hidden></div>
     <div id="teamMatchupBox" class="matchup-box" hidden></div>
     <div id="modalBody" class="modal-body"></div>
     <div class="modal-export-row" id="modalExportRow">
@@ -1306,7 +1307,8 @@ async function fetchStat(pid, group, tf, year) {
 }
 
 function wantsBatting(row) { return row.pos !== 'P'; }
-function wantsPitching(row) { return row.pos === 'P' || row.pos === 'TWP'; }
+// A club always has both sides of the ball, so team totals get hitting AND pitching sections.
+function wantsPitching(row) { return row.isTeam || row.pos === 'P' || row.pos === 'TWP'; }
 // A true two-way player (MLB tags this as position 'TWP' — currently just Ohtani, but this
 // isn't hardcoded to him) wants both hitting and pitching everywhere, not just the main stat
 // body: L/R splits, notable rankings, postseason, and career-vs-opponent all need to offer both
@@ -2367,6 +2369,97 @@ async function paintRecordBox() {
 }
 
 // =====================================================================================
+// Team rankings — where a club stands in MLB in each stat ("6th in ERA", "1st in Stolen Bases").
+// teams/stats returns all 30 clubs in one call for any scope the stat endpoints support, so the
+// rank is computed here from the full league table rather than trusting its default ordering.
+// =====================================================================================
+// [group, stat key, label, higher is better]. Counting stats where fewer is better carry
+// "Fewest" in the label so the on-air sentence stays honest ("3rd in MLB in fewest walks allowed").
+const TEAM_RANK_STATS = [
+  ['hitting', 'runs', 'Runs Scored', true], ['hitting', 'homeRuns', 'Home Runs', true],
+  ['hitting', 'stolenBases', 'Stolen Bases', true], ['hitting', 'avg', 'Batting Average', true],
+  ['hitting', 'obp', 'On-Base Percentage', true], ['hitting', 'slg', 'Slugging Percentage', true],
+  ['hitting', 'ops', 'OPS', true], ['hitting', 'hits', 'Hits', true], ['hitting', 'rbi', 'RBI', true],
+  ['hitting', 'baseOnBalls', 'Walks', true], ['hitting', 'strikeOuts', 'Fewest Strikeouts', false],
+  ['pitching', 'era', 'ERA', false], ['pitching', 'whip', 'WHIP', false],
+  ['pitching', 'avg', 'Batting Average Against', false], ['pitching', 'strikeOuts', 'Strikeouts', true],
+  ['pitching', 'wins', 'Wins', true], ['pitching', 'saves', 'Saves', true],
+  ['pitching', 'runs', 'Fewest Runs Allowed', false], ['pitching', 'earnedRuns', 'Fewest Earned Runs Allowed', false],
+  ['pitching', 'homeRuns', 'Fewest Home Runs Allowed', false], ['pitching', 'baseOnBalls', 'Fewest Walks Allowed', false],
+];
+
+// Every club's line for one scope. Mirrors fetchStat's scope handling; returns null for scopes
+// teams/stats can't express (multi-season, months, since-date, custom ranges, career).
+async function fetchAllTeamsStat(group, tf, year) {
+  const today = new Date().toISOString().slice(0, 10);
+  let suffix;
+  if (tf === 'season') suffix = '&stats=season';
+  else if (isSplitTf(tf)) suffix = `&stats=statSplits&sitCodes=${tf}`;
+  else if (tf === 'home' || tf === 'away') suffix = `&stats=statSplits&sitCodes=${tf === 'home' ? 'h' : 'a'}`;
+  else if (tf === '2h') {
+    const start = await getSecondHalfStart(year);
+    if (!start) return null;
+    suffix = `&stats=byDateRange&startDate=${start}&endDate=${today}`;
+  } else if (['l7', 'l14', 'l30', 'month'].includes(tf)) {
+    const { startDate, endDate } = dateRangeFor(tf);
+    suffix = `&stats=byDateRange&startDate=${startDate}&endDate=${endDate}`;
+  } else return null;
+  const d = await jc(`${API}/teams/stats?season=${year}&group=${group}&sportId=1${suffix}`);
+  const splits = ((d.stats || [])[0] || {}).splits || [];
+  return splits.map(s => ({ teamId: s.team && s.team.id, stat: s.stat || {} }));
+}
+
+async function paintTeamRankBox() {
+  const box = $('teamRankBox');
+  if (!box) return;
+  if (!modalRow || !modalRow.isTeam) { box.hidden = true; box.innerHTML = ''; return; }
+  const pid = modalPid, teamId = modalRow.teamId, tf = modalTf, scopeAtStart = scopeLabel();
+  box.hidden = false;
+  const supported = modalSeasons.size === 1 && !modalSince && !modalMonths.size
+    && !isCareerTf(tf) && !isCareerSplit(tf) && !isLastXTf(tf) && !isRangeTf(tf);
+  if (!supported) {
+    box.innerHTML = `<h3>MLB Rankings</h3><div class="modal-empty">Rankings are available for a single season, ` +
+      `or its last 7/14/30 days, second half, home/road and vs. L/R splits.</div>`;
+    return;
+  }
+  const year = [...modalSeasons][0];
+  box.innerHTML = `<h3>MLB Rankings</h3><div class="modal-empty">Ranking all 30 clubs…</div>`;
+  const [hit, pit] = await Promise.all(['hitting', 'pitching'].map(g => fetchAllTeamsStat(g, tf, year).catch(() => null)));
+  if (modalPid !== pid || modalTf !== tf || scopeLabel() !== scopeAtStart) return;   // scope moved on
+  const byGroup = { hitting: [], pitching: [] };
+  TEAM_RANK_STATS.forEach(([group, key, label, higher]) => {
+    const all = group === 'hitting' ? hit : pit;
+    const mine = all && all.find(t => t.teamId === teamId);
+    const v = mine ? parseFloat(mine.stat[key]) : NaN;
+    if (isNaN(v)) return;
+    const vals = all.map(t => parseFloat(t.stat[key])).filter(x => !isNaN(x));
+    const rank = vals.filter(x => higher ? x > v : x < v).length + 1;   // ties share a rank
+    byGroup[group].push({ group, label, rank, of: vals.length, value: mine.stat[key] });
+  });
+  if (!byGroup.hitting.length && !byGroup.pitching.length) {
+    box.innerHTML = `<h3>MLB Rankings</h3><div class="modal-empty">No ranking data for this scope.</div>`;
+    return;
+  }
+  const scopeNote = tf === 'season' ? '' : recordScopeWords();
+  box.innerHTML = `<h3>MLB Rankings · ${scopeAtStart}</h3>` +
+    ['hitting', 'pitching'].map(g => byGroup[g].length
+      ? `<div class="scope-row"><label>${g === 'hitting' ? 'Hitting' : 'Pitching'}</label>` +
+        byGroup[g].sort((a, b) => a.rank - b.rank).map((r, i) =>
+          `<button type="button" class="tf-pill${r.rank <= 5 ? ' on' : ''}" data-g="${g}" data-i="${i}">${ordinal(r.rank)} ${r.label}</button>`).join('') +
+        `</div>` : '').join('') +
+    `<div class="modal-empty" style="margin-top:6px">Click a ranking to put it on air (top 5 highlighted).</div>`;
+  box.querySelectorAll('button[data-g]').forEach(btn => {
+    btn.onclick = () => {
+      const r = byGroup[btn.dataset.g][+btn.dataset.i];
+      const data = buildRankGraphicData({ rank: r.rank, scope: 'MLB', label: r.label, value: r.value });
+      if (scopeNote) data.rankNote = scopeNote.toUpperCase();
+      pushOnAir(modalPid, r.group === 'pitching' ? 'pit' : 'bat', modalRow, data);
+      $('modalDlNote').textContent = `On air: ${data.label}`;
+    };
+  });
+}
+
+// =====================================================================================
 // Team Totals — the whole club's numbers, opened from a standings row. Uses the synthetic
 // team pid so it inherits every split, month, tile and preview behaviour from the player modal.
 // =====================================================================================
@@ -2473,6 +2566,7 @@ async function loadModalStats() {
   const pid = modalPid, row = modalRow, tf = modalTf, scopeAtStart = scopeLabel();
   // the record block reads the same scope selectors, so keep it in step with every stat reload
   if (row && row.isTeam) paintRecordBox();
+  paintTeamRankBox();   // shows MLB rankings for a team, hides itself for a player
   $('modalBody').innerHTML = `<div class="modal-empty">Loading ${scopeAtStart}…</div>`;
   const doBat = wantsBatting(row), doPit = wantsPitching(row);
   const [bat, pit] = await Promise.all([

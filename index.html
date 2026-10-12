@@ -1750,13 +1750,13 @@ function buildPostseasonGraphicData(row, years, allYears, round, forcedGroup) {
   const combined = aggregateFor(group, entries);
   const label = postseasonLabel(yrs, allYears, round);
   if (group === 'pitching') {
-    return { label, splitLabel: label, cells: [
+    return { label, splitLabel: withSample(label, combined, 'pitching'), cells: [
       ['IP', combined.inningsPitched], ['ERA', combined.era], ['WHIP', combined.whip],
       ['W-L', `${combined.wins}-${combined.losses}`],
       ['K%', kPct(combined.strikeOuts, combined.battersFaced)],
       ['BB%', bbPct(combined.baseOnBalls, combined.battersFaced)] ] };
   }
-  return { label, splitLabel: label, hitLine: `${combined.hits}-for-${combined.atBats}`, cells: [
+  return { label, splitLabel: withSample(label, combined, 'hitting'), hitLine: `${combined.hits}-for-${combined.atBats}`, cells: [
     ['AVG', combined.avg], ['OBP', combined.obp], ['SLG', combined.slg], ['OPS', combined.ops],
     ['K%', kPct(combined.strikeOuts, combined.plateAppearances)],
     ['BB%', bbPct(combined.baseOnBalls, combined.plateAppearances)],
@@ -3016,6 +3016,22 @@ function closeModal() { $('modalBackdrop').hidden = true; }
 // Same stat lineup as the other lower-third tools: rate line first, then K%/BB%, then the
 // counting stats worth showing. splitLabel drives the gold line above the cells; label is kept
 // for the on-air chip text on the control panel.
+// Sample size for the gold line above the stats ("2026 SEASON · 109 GAMES, 400 PA"). Only shown
+// once there are more than 5 games, since a handful of games is already obvious from the numbers.
+function sampleTag(st, group) {
+  if (!st) return '';
+  const g = +(st.gamesPlayed != null ? st.gamesPlayed : st.gamesPitched);
+  if (!(g > 5)) return '';
+  const tail = group === 'pitching'
+    ? (st.inningsPitched != null ? `, ${st.inningsPitched} IP` : '')
+    : (st.plateAppearances != null ? `, ${st.plateAppearances} PA` : '');
+  return `${g} GAMES${tail}`;
+}
+function withSample(label, st, group) {
+  const t = sampleTag(st, group);
+  return t && label ? `${label} · ${t}` : label;
+}
+
 function battingGraphicData(st, label, tf) {
   if (!st) return null;
   // vs a specific handedness the sample is small enough that HR/RBI are worth showing even at
@@ -3026,11 +3042,11 @@ function battingGraphicData(st, label, tf) {
   const cells = [['AVG', st.avg], ['OBP', st.obp], ['SLG', st.slg], ['OPS', st.ops],
     ['K%', kPct(st.strikeOuts, st.plateAppearances)], ['BB%', bbPct(st.baseOnBalls, st.plateAppearances)],
     ...extra];
-  return { label, splitLabel: label, hitLine: `${st.hits}-for-${st.atBats}`, cells };
+  return { label, splitLabel: withSample(label, st, 'hitting'), hitLine: `${st.hits}-for-${st.atBats}`, cells };
 }
 function pitchingGraphicData(st, label) {
   if (!st) return null;
-  return { label, splitLabel: label, cells: [
+  return { label, splitLabel: withSample(label, st, 'pitching'), cells: [
     ['IP', st.inningsPitched], ['ERA', st.era], ['WHIP', st.whip], ['W-L', `${st.wins}-${st.losses}`],
     ['K%', kPct(st.strikeOuts, st.battersFaced)], ['BB%', bbPct(st.baseOnBalls, st.battersFaced)] ] };
 }
@@ -3038,7 +3054,7 @@ function pitchingGraphicData(st, label) {
 // what the API actually gives us: IP/WHIP/K%/BB% plus the opposing batting line (BAA/HR)
 function pitchingSplitGraphicData(st, label) {
   if (!st) return null;
-  return { label, splitLabel: label, hitLine: `${st.hits}-for-${st.atBats} allowed`, cells: [
+  return { label, splitLabel: withSample(label, st, 'pitching'), hitLine: `${st.hits}-for-${st.atBats} allowed`, cells: [
     ['IP', st.inningsPitched], ['WHIP', st.whip], ['BAA', st.avg],
     ['K%', kPct(st.strikeOuts, st.battersFaced)], ['BB%', bbPct(st.baseOnBalls, st.battersFaced)],
     ['HR', +st.homeRuns || 0] ] };

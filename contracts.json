@@ -2537,6 +2537,1244 @@
     "2026": 139037
    },
    "source": "FanGraphs Roster Resource, Mets payroll 2026"
+  },
+  "608324": {
+   "name": "Alex Bregman",
+   "summary": "5 yr, $175M (2026-30); deferrals lower AAV",
+   "total": 175000000,
+   "years": 5,
+   "start": 2026,
+   "end": 2030,
+   "aav": 30893902,
+   "seasons": {
+    "2026": 35000000,
+    "2027": 35000000,
+    "2028": 35000000,
+    "2029": 35000000,
+    "2030": 35000000
+   },
+   "tags": {
+    "2031": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "621020": {
+   "name": "Dansby Swanson",
+   "summary": "7 yr, $177M (2023-29)",
+   "total": 177000000,
+   "years": 7,
+   "start": 2023,
+   "end": 2029,
+   "aav": 25285714,
+   "seasons": {
+    "2026": 28000000,
+    "2027": 28000000,
+    "2028": 27000000,
+    "2029": 26000000
+   },
+   "tags": {
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "684007": {
+   "name": "Shota Imanaga",
+   "summary": "1 yr, $22.025M (2026)",
+   "total": 22025000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 22025000,
+   "seasons": {
+    "2026": 22025000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "592332": {
+   "name": "Kevin Gausman",
+   "summary": "5 yr, $110M (2022-26)",
+   "total": 110000000,
+   "years": 5,
+   "start": 2022,
+   "end": 2026,
+   "aav": 22000000,
+   "seasons": {
+    "2026": 23000000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "664023": {
+   "name": "Ian Happ",
+   "summary": "3 yr, $61M (2024-26)",
+   "total": 61000000,
+   "years": 3,
+   "start": 2024,
+   "end": 2026,
+   "aav": 20333333,
+   "seasons": {
+    "2026": 19000000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "673548": {
+   "name": "Seiya Suzuki",
+   "summary": "5 yr, $85M (2022-26)",
+   "total": 85000000,
+   "years": 5,
+   "start": 2022,
+   "end": 2026,
+   "aav": 17000000,
+   "seasons": {
+    "2026": 19000000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "571510": {
+   "name": "Matthew Boyd",
+   "summary": "2 yr, $29M (2025-26), 2027 mutual option",
+   "total": 29000000,
+   "years": 2,
+   "start": 2025,
+   "end": 2026,
+   "aav": 14500000,
+   "seasons": {
+    "2026": 17000000,
+    "2027": 15000000
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "605280": {
+   "name": "Clay Holmes",
+   "summary": "3 yr, $38M (2025-27), 2027 player option",
+   "total": 38000000,
+   "years": 3,
+   "start": 2025,
+   "end": 2027,
+   "aav": 12666667,
+   "seasons": {
+    "2026": 13000000,
+    "2027": 12000000
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "663538": {
+   "name": "Nico Hoerner",
+   "summary": "3 yr, $35M (2024-26); 6 yr, $141M (2027-32); deferrals lower AAV",
+   "total": 35000000,
+   "years": 3,
+   "start": 2024,
+   "end": 2026,
+   "aav": 11666667,
+   "seasons": {
+    "2026": 12000000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "664208": {
+   "name": "Phil Maton",
+   "summary": "2 yr, $14.5M (2026-27), 2028 club option",
+   "total": 14500000,
+   "years": 2,
+   "start": 2026,
+   "end": 2027,
+   "aav": 7250000,
+   "seasons": {
+    "2026": 5500000,
+    "2027": 6000000,
+    "2028": 8500000
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "607067": {
+   "name": "Colin Rea",
+   "summary": "1 yr, $6.5M (2026), 2027 club option",
+   "total": 6500000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 6500000,
+   "seasons": {
+    "2026": 5500000,
+    "2027": 7500000
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "640451": {
+   "name": "Hunter Harvey",
+   "summary": "1 yr, $6M (2026), 2027 mutual option",
+   "total": 6000000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 6000000,
+   "seasons": {
+    "2026": 5000000,
+    "2027": 8000000
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "650644": {
+   "name": "Aaron Civale",
+   "summary": "1 yr, $6M (2026)",
+   "total": 6000000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 6000000,
+   "seasons": {
+    "2026": 6000000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "608348": {
+   "name": "Carson Kelly",
+   "summary": "2 yr, $11.5M (2025-26), 2027 mutual option",
+   "total": 11500000,
+   "years": 2,
+   "start": 2025,
+   "end": 2026,
+   "aav": 5750000,
+   "seasons": {
+    "2026": 5000000,
+    "2027": 7500000
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "573204": {
+   "name": "Caleb Thielbar",
+   "summary": "1 yr, $4.5M (2026), 2027 mutual option",
+   "total": 4500000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 4500000,
+   "seasons": {
+    "2026": 4000000,
+    "2027": 6000000
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "624424": {
+   "name": "Michael Conforto",
+   "summary": "1 yr, $2M (2026)",
+   "total": 2000000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 2000000,
+   "seasons": {
+    "2026": 2000000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "665871": {
+   "name": "Javier Assad",
+   "summary": "1 yr, $1.8M (2026), 2027 club option",
+   "total": 1800000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 1800000,
+   "seasons": {
+    "2026": 1800000,
+    "2027": 3300000
+   },
+   "tags": {
+    "2028": "TBD",
+    "2029": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "657097": {
+   "name": "Jacob Webb",
+   "summary": "1 yr, $1.5M (2026), 2027 club option",
+   "total": 1500000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 1500000,
+   "seasons": {
+    "2026": 1500000,
+    "2027": 2500000
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "663423": {
+   "name": "Trent Thornton",
+   "summary": "1 yr, $1.357M (2026); $1.75M, prorated",
+   "total": 1357000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 1356952,
+   "seasons": {
+    "2026": 1356952
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "592122": {
+   "name": "Tyler Austin",
+   "summary": "1 yr, $1.25M (2026); split contract: $400k in minors",
+   "total": 1250000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 1250000,
+   "seasons": {
+    "2026": 1250000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "571946": {
+   "name": "Shelby Miller",
+   "summary": "2 yr, $2.5M (2026-27), 2028 club option",
+   "total": 2500000,
+   "years": 2,
+   "start": 2026,
+   "end": 2027,
+   "aav": 1250000,
+   "seasons": {
+    "2026": 1000000,
+    "2027": 1250000,
+    "2028": 2500000
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "691718": {
+   "name": "Pete Crow-Armstrong",
+   "summary": "1 yr, $894k (2026); 6 yr, $115M (2027-32)",
+   "total": 894000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 894000,
+   "seasons": {
+    "2026": 894000
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "ARB 1",
+    "2029": "ARB 2",
+    "2030": "ARB 3",
+    "2031": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "656849": {
+   "name": "David Peterson",
+   "summary": "1 yr, $8.1M (2026)",
+   "total": 8100000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 8100000,
+   "seasons": {
+    "2026": 8100000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "621438": {
+   "name": "Tyrone Taylor",
+   "summary": "1 yr, $3.8M (2026)",
+   "total": 3800000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 3800000,
+   "seasons": {
+    "2026": 3800000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "657006": {
+   "name": "Justin Steele",
+   "summary": "1 yr, $6.775M (2026)",
+   "total": 6775000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 6775000,
+   "seasons": {
+    "2026": 6775000
+   },
+   "tags": {
+    "2027": "ARB 4",
+    "2028": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "665795": {
+   "name": "Edward Cabrera",
+   "summary": "1 yr, $4.45M (2026)",
+   "total": 4450000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 4450000,
+   "seasons": {
+    "2026": 4450000
+   },
+   "tags": {
+    "2027": "ARB 3",
+    "2028": "ARB 4",
+    "2029": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "666129": {
+   "name": "Braxton Garrett",
+   "summary": "1 yr, $1.53M (2026)",
+   "total": 1530000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 1530000,
+   "seasons": {
+    "2026": 1530000
+   },
+   "tags": {
+    "2027": "ARB 3",
+    "2028": "ARB 4",
+    "2029": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "683737": {
+   "name": "Michael Busch",
+   "summary": "1 yr, $860k (2026)",
+   "total": 860000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 860000,
+   "seasons": {
+    "2026": 860000
+   },
+   "tags": {
+    "2027": "ARB 1",
+    "2028": "ARB 2",
+    "2029": "ARB 3",
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "665804": {
+   "name": "Miguel Amaya",
+   "summary": "1 yr, $808.5k (2026)",
+   "total": 808500,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 808500,
+   "seasons": {
+    "2026": 808500
+   },
+   "tags": {
+    "2027": "ARB 1",
+    "2028": "ARB 2",
+    "2029": "ARB 3",
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "672356": {
+   "name": "Gabriel Arias",
+   "summary": "1 yr, $801.1k (2026)",
+   "total": 801100,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 801100,
+   "seasons": {
+    "2026": 801100
+   },
+   "tags": {
+    "2027": "ARB 1",
+    "2028": "ARB 2",
+    "2029": "ARB 3",
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "681799": {
+   "name": "Ethan Roberts",
+   "summary": "1 yr, $787k (2026)",
+   "total": 787000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 787000,
+   "seasons": {
+    "2026": 787000
+   },
+   "tags": {
+    "2027": "ARB 1",
+    "2028": "ARB 2",
+    "2029": "ARB 3",
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "669020": {
+   "name": "Ryan Rolison",
+   "summary": "1 yr, $785k (2026)",
+   "total": 785000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 785000,
+   "seasons": {
+    "2026": 785000
+   },
+   "tags": {
+    "2027": "ARB 1",
+    "2028": "ARB 2",
+    "2029": "ARB 3",
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "690990": {
+   "name": "Cade Horton",
+   "summary": "1 yr, $817.5k (2026)",
+   "total": 817500,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 817500,
+   "seasons": {
+    "2026": 817500
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "ARB 1",
+    "2029": "ARB 2",
+    "2030": "ARB 3",
+    "2031": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "694037": {
+   "name": "Daniel Palencia",
+   "summary": "1 yr, $808k (2026)",
+   "total": 808000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 808000,
+   "seasons": {
+    "2026": 808000
+   },
+   "tags": {
+    "2027": "ARB 1",
+    "2028": "ARB 2",
+    "2029": "ARB 3",
+    "2030": "ARB 4",
+    "2031": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "676962": {
+   "name": "Ben Brown",
+   "summary": "1 yr, $801k (2026)",
+   "total": 801000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 801000,
+   "seasons": {
+    "2026": 801000
+   },
+   "tags": {
+    "2027": "ARB 1",
+    "2028": "ARB 2",
+    "2029": "ARB 3",
+    "2030": "ARB 4",
+    "2031": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "687863": {
+   "name": "Porter Hodge",
+   "summary": "1 yr, $800k (2026)",
+   "total": 800000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 800000,
+   "seasons": {
+    "2026": 800000
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "ARB 1",
+    "2029": "ARB 2",
+    "2030": "ARB 3",
+    "2031": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "666171": {
+   "name": "Ryan Zeferjahn",
+   "summary": "1 yr, $780k (2026)",
+   "total": 780000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 780000,
+   "seasons": {
+    "2026": 780000
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "ARB 1",
+    "2029": "ARB 2",
+    "2030": "ARB 3",
+    "2031": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "807713": {
+   "name": "Matt Shaw",
+   "summary": "1 yr, $804.5k (2026)",
+   "total": 804500,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 804500,
+   "seasons": {
+    "2026": 804500
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "ARB 1",
+    "2029": "ARB 2",
+    "2030": "ARB 3",
+    "2031": "ARB 4",
+    "2032": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "699393": {
+   "name": "Pedro Ramírez",
+   "summary": "1 yr, $780k (2026)",
+   "total": 780000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 780000,
+   "seasons": {
+    "2026": 780000
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "Pre-ARB",
+    "2029": "Pre-ARB",
+    "2030": "ARB 1",
+    "2031": "ARB 2",
+    "2032": "ARB 3"
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "571948": {
+   "name": "Hoby Milner",
+   "summary": "1 yr, $3.75M (2026)",
+   "total": 3750000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 3750000,
+   "seasons": {
+    "2026": 3750000
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "664068": {
+   "name": "Scott Kingery",
+   "summary": "1 yr, $227.273k (2026); $1.25M, prorated",
+   "total": 227273,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 227273,
+   "seasons": {
+    "2026": 227273
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "666185": {
+   "name": "Dylan Carlson",
+   "summary": "1 yr, $203.209k (2026); $2M, prorated",
+   "total": 203209,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 203209,
+   "seasons": {
+    "2026": 203209
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "519141": {
+   "name": "Drew Pomeranz",
+   "summary": "1 yr, $83.422k (2026); $780k, prorated",
+   "total": 83422,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 83422,
+   "seasons": {
+    "2026": 83422
+   },
+   "source": "FanGraphs Roster Resource, Cubs payroll 2026"
+  },
+  "621043": {
+   "name": "Carlos Correa",
+   "summary": "6 yr, $200M (2023-28), 2029-32 vesting options",
+   "total": 200000000,
+   "years": 6,
+   "start": 2023,
+   "end": 2028,
+   "aav": 31176661,
+   "seasons": {
+    "2026": 32833333,
+    "2027": 31833333,
+    "2028": 31333333,
+    "2029": 25000000,
+    "2030": 20000000,
+    "2031": 15000000,
+    "2032": 10000000
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "514888": {
+   "name": "Jose Altuve",
+   "summary": "5 yr, $125M (2025-29)",
+   "total": 125000000,
+   "years": 5,
+   "start": 2025,
+   "end": 2029,
+   "aav": 25000000,
+   "seasons": {
+    "2026": 33000000,
+    "2027": 33000000,
+    "2028": 13000000,
+    "2029": 13000000
+   },
+   "tags": {
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "572233": {
+   "name": "Christian Walker",
+   "summary": "3 yr, $60M (2025-27)",
+   "total": 60000000,
+   "years": 3,
+   "start": 2025,
+   "end": 2027,
+   "aav": 20000000,
+   "seasons": {
+    "2026": 20000000,
+    "2027": 20000000
+   },
+   "tags": {
+    "2028": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "670541": {
+   "name": "Yordan Alvarez",
+   "summary": "6 yr, $115M (2023-28)",
+   "total": 115000000,
+   "years": 6,
+   "start": 2023,
+   "end": 2028,
+   "aav": 19166667,
+   "seasons": {
+    "2026": 26833333,
+    "2027": 26833333,
+    "2028": 26833333
+   },
+   "tags": {
+    "2029": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "623352": {
+   "name": "Josh Hader",
+   "summary": "5 yr, $95M (2024-28)",
+   "total": 95000000,
+   "years": 5,
+   "start": 2024,
+   "end": 2028,
+   "aav": 19000000,
+   "seasons": {
+    "2026": 19000000,
+    "2027": 19000000,
+    "2028": 19000000
+   },
+   "tags": {
+    "2029": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "837227": {
+   "name": "Tatsuya Imai",
+   "summary": "3 yr, $54M (2026-28), 2027-28 player options",
+   "total": 54000000,
+   "years": 3,
+   "start": 2026,
+   "end": 2028,
+   "aav": 18000000,
+   "seasons": {
+    "2026": 18000000,
+    "2027": 18000000,
+    "2028": 18000000
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "664299": {
+   "name": "Cristian Javier",
+   "summary": "5 yr, $64M (2023-27)",
+   "total": 64000000,
+   "years": 5,
+   "start": 2023,
+   "end": 2027,
+   "aav": 12800000,
+   "seasons": {
+    "2026": 21400000,
+    "2027": 21400000
+   },
+   "tags": {
+    "2028": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "670623": {
+   "name": "Isaac Paredes",
+   "summary": "1 yr, $9.35M (2026), 2027 club option; converts to mutual option with top 10 MVP finish",
+   "total": 9350000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 9350000,
+   "seasons": {
+    "2026": 9350000,
+    "2027": 13350000
+   },
+   "tags": {
+    "2028": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "664774": {
+   "name": "LaMonte Wade Jr.",
+   "summary": "1 yr, $1M (2026)",
+   "total": 1000000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 1000000,
+   "seasons": {
+    "2026": 1000000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "543877": {
+   "name": "Christian Vázquez",
+   "summary": "1 yr, $1M (2026)",
+   "total": 1000000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 1000000,
+   "seasons": {
+    "2026": 1000000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "662139": {
+   "name": "Daulton Varsho",
+   "summary": "1 yr, $10.75M (2026)",
+   "total": 10750000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 10750000,
+   "seasons": {
+    "2026": 10750000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "650556": {
+   "name": "Bryan Abreu",
+   "summary": "1 yr, $5.85M (2026)",
+   "total": 5850000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 5850000,
+   "seasons": {
+    "2026": 5850000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "595345": {
+   "name": "Steven Okert",
+   "summary": "1 yr, $2.325M (2026)",
+   "total": 2325000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 2325000,
+   "seasons": {
+    "2026": 2325000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "660853": {
+   "name": "Enyel De Los Santos",
+   "summary": "1 yr, $1.6M (2026)",
+   "total": 1600000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 1600000,
+   "seasons": {
+    "2026": 1600000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "665161": {
+   "name": "Jeremy Peña",
+   "summary": "1 yr, $9.475M (2026)",
+   "total": 9475000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 9475000,
+   "seasons": {
+    "2026": 9475000
+   },
+   "tags": {
+    "2027": "ARB 3",
+    "2028": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "663567": {
+   "name": "Peter Lambert",
+   "summary": "1 yr, $1.535M (2026); $1.75M, prorated",
+   "total": 1535000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 1535000,
+   "seasons": {
+    "2026": 1534759
+   },
+   "tags": {
+    "2027": "ARB 3",
+    "2028": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "686613": {
+   "name": "Hunter Brown",
+   "summary": "1 yr, $5.71M (2026)",
+   "total": 5710000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 5710000,
+   "seasons": {
+    "2026": 5710000
+   },
+   "tags": {
+    "2027": "ARB 2",
+    "2028": "ARB 3",
+    "2029": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "673237": {
+   "name": "Yainer Diaz",
+   "summary": "1 yr, $4.5M (2026)",
+   "total": 4500000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 4500000,
+   "seasons": {
+    "2026": 4500000
+   },
+   "tags": {
+    "2027": "ARB 2",
+    "2028": "ARB 3",
+    "2029": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "676694": {
+   "name": "Jake Meyers",
+   "summary": "1 yr, $3.55M (2026)",
+   "total": 3550000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 3550000,
+   "seasons": {
+    "2026": 3550000
+   },
+   "tags": {
+    "2027": "ARB 2",
+    "2028": "ARB 3",
+    "2029": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "669397": {
+   "name": "Nick Allen",
+   "summary": "1 yr, $1.4M (2026)",
+   "total": 1400000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 1400000,
+   "seasons": {
+    "2026": 1400000
+   },
+   "tags": {
+    "2027": "ARB 2",
+    "2028": "ARB 3",
+    "2029": "ARB 4",
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "669713": {
+   "name": "Hayden Wesneski",
+   "summary": "1 yr, $975k (2026)",
+   "total": 975000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 975000,
+   "seasons": {
+    "2026": 975000
+   },
+   "tags": {
+    "2027": "ARB 2",
+    "2028": "ARB 3",
+    "2029": "ARB 4",
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "656986": {
+   "name": "Bennett Sousa",
+   "summary": "1 yr, $910k (2026)",
+   "total": 910000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 910000,
+   "seasons": {
+    "2026": 910000
+   },
+   "tags": {
+    "2027": "ARB 2",
+    "2028": "ARB 3",
+    "2029": "ARB 4",
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "666211": {
+   "name": "Taylor Trammell",
+   "summary": "1 yr, $876.471k (2026); split contract",
+   "total": 876471,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 876471,
+   "seasons": {
+    "2026": 876471
+   },
+   "tags": {
+    "2027": "ARB 2",
+    "2028": "ARB 3",
+    "2029": "ARB 4",
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "669854": {
+   "name": "Ronel Blanco",
+   "summary": "1 yr, $802.7k (2026)",
+   "total": 802700,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 802700,
+   "seasons": {
+    "2026": 802700
+   },
+   "tags": {
+    "2027": "ARB 1",
+    "2028": "ARB 2",
+    "2029": "ARB 3",
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "701358": {
+   "name": "Cam Smith",
+   "summary": "1 yr, $809.9k (2026)",
+   "total": 809900,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 809900,
+   "seasons": {
+    "2026": 809900
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "ARB 1",
+    "2029": "ARB 2",
+    "2030": "ARB 3",
+    "2031": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "687911": {
+   "name": "Bryan King",
+   "summary": "1 yr, $799.9k (2026)",
+   "total": 799900,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 799900,
+   "seasons": {
+    "2026": 799900
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "ARB 1",
+    "2029": "ARB 2",
+    "2030": "ARB 3",
+    "2031": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "681347": {
+   "name": "Mike Burrows",
+   "summary": "1 yr, $800.1k (2026)",
+   "total": 800100,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 800100,
+   "seasons": {
+    "2026": 800100
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "ARB 1",
+    "2029": "ARB 2",
+    "2030": "ARB 3",
+    "2031": "ARB 4",
+    "2032": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "805123": {
+   "name": "AJ Blubaugh",
+   "summary": "1 yr, $787.7k (2026)",
+   "total": 787700,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 787700,
+   "seasons": {
+    "2026": 787700
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "Pre-ARB",
+    "2029": "ARB 1",
+    "2030": "ARB 2",
+    "2031": "ARB 3",
+    "2032": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
+  },
+  "680802": {
+   "name": "Ryan Weiss",
+   "summary": "1 yr, $2.6M (2026)",
+   "total": 2600000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 2600000,
+   "seasons": {
+    "2026": 2100000,
+    "2027": 5000000
+   },
+   "source": "FanGraphs Roster Resource, Astros payroll 2026"
   }
  }
 }

@@ -1995,7 +1995,8 @@ function normalizeContract(c) {
     for (let y = +c.start; y <= +c.end; y++) seasons.set(String(y), aav);
   }
   const ys = [...seasons.keys()].map(Number).sort((a, b) => a - b);
-  return { total, years: years || ys.length, aav, seasons, note: c.note || '',
+  return { total, years: years || ys.length, aav, seasons, note: c.note || '', summary: c.summary || '',
+           tags: c.tags || {},
            start: +c.start || ys[0], end: +c.end || ys[ys.length - 1] };
 }
 
@@ -2042,13 +2043,19 @@ async function paintContractPane() {
 
   const paint = () => {
     const s = sel();
+    // FanGraphs' own contract text (opt-outs, club options, etc.) when we have it; otherwise built from the numbers
+    const headline = c.summary
+      ? `${c.summary} · ${fmtMoney(c.aav)} AAV`
+      : `${c.years} yrs · ${fmtMoney(c.total)} total · ${fmtMoney(c.aav)} AAV` +
+        (c.start && c.end ? ` · ${c.start}–${c.end}` : '');
+    const control = Object.entries(c.tags).sort().map(([y, t]) => `${y} ${t}`).join(' · ');
     box.innerHTML = `<h3>Contract</h3>` +
-      `<div class="modal-line">${c.years} yrs · ${fmtMoney(c.total)} total · ${fmtMoney(c.aav)} AAV` +
-      (c.start && c.end ? ` · ${c.start}–${c.end}` : '') + `</div>` +
+      `<div class="modal-line">${headline}</div>` +
+      (control ? `<div class="modal-empty" style="margin:4px 0 0">${control}</div>` : '') +
       (c.note ? `<div class="modal-empty" style="margin:4px 0 8px">${c.note}</div>` : '') +
       `<div class="scope-row"><button type="button" class="tf-pill" id="cPushTotal">Total value · years · AAV</button></div>` +
       `<div class="scope-row"><label>AAV in seasons</label>` +
-        yrs.map(y => `<button type="button" class="tf-pill${contractSeasons.has(y) ? ' on' : ''}" data-cy="${y}">${y}</button>`).join('') +
+        yrs.map(y => `<button type="button" class="tf-pill${contractSeasons.has(y) ? ' on' : ''}" data-cy="${y}" title="${fmtMoney(c.seasons.get(y))}">${y} · ${fmtMoney(c.seasons.get(y))}</button>`).join('') +
       `</div>` +
       `<div class="scope-row"><button type="button" class="tf-pill" id="cPushAav"${s.length ? '' : ' disabled'}>` +
         `Push AAV · ${spanLabel(s) || 'pick a season'}${s.length ? ` (${fmtMoney(selAvg())})` : ''}</button></div>` +

@@ -1126,6 +1126,7 @@ const TF = [
   ['l14', 'LAST 2 WEEKS'],
   ['l30', 'LAST 30 DAYS'],
   ['month', 'THIS MONTH'],
+  ['1h', 'FIRST HALF'],
   ['2h', 'SECOND HALF'],
   ['vl', 'VS LHP'],
   ['vr', 'VS RHP'],
@@ -1283,6 +1284,14 @@ async function getSecondHalfStart(year) {
   return p;
 }
 
+// First half = opening day through the All-Star Game date (inclusive; no regular games are played that day).
+async function getFirstHalfEnd(year) {
+  const start = await getSecondHalfStart(year);
+  if (!start) return null;
+  const d = new Date(start + 'T12:00'); d.setDate(d.getDate() - 1);
+  return d.toISOString().slice(0, 10);
+}
+
 // A team is addressed with a synthetic "team:<id>" pid so every existing stat helper below can
 // point at /teams/{id}/stats instead of /people/{pid}/stats. That lets Team Totals reuse the whole
 // pipeline (splits, seasons, months, tiles, preview, on-air push) rather than duplicating it.
@@ -1303,6 +1312,11 @@ async function fetchStat(pid, group, tf, year) {
   else if (tf === 'career') { if (isTeamPid(pid)) return null; url = `${statsBase(pid)}/stats?stats=career&group=${group}&sportId=1`; }
   else if (isSplitTf(tf)) url = `${base}&stats=statSplits&sitCodes=${tf}`;
   else if (tf === 'home' || tf === 'away') url = `${base}&stats=statSplits&sitCodes=${tf === 'home' ? 'h' : 'a'}`;
+  else if (tf === '1h') {
+    const end = await getFirstHalfEnd(year);
+    if (!end) return null;
+    url = `${base}&stats=byDateRange&startDate=${year}-02-01&endDate=${end}`;
+  }
   else if (tf === '2h') {
     const start = await getSecondHalfStart(year);
     if (!start) return null;
@@ -2354,6 +2368,14 @@ async function currentScopeRanges() {
     const { startDate, endDate } = dateRangeFor(modalTf);
     return [{ start: startDate, end: endDate }];
   }
+  if (modalTf === '1h') {
+    const out = [];
+    for (const y of years) {
+      const end = await getFirstHalfEnd(y);
+      if (end) out.push({ start: `${y}-02-01`, end });
+    }
+    return out.length ? out : years.map(clampYear);
+  }
   if (modalTf === '2h') {
     const out = [];
     for (const y of years) {
@@ -2446,6 +2468,7 @@ function recordScopeWords() {
   if (modalTf === 'l14') return 'over the last 2 weeks';
   if (modalTf === 'l30') return 'over the last 30 days';
   if (modalTf === 'month') return 'this month';
+  if (modalTf === '1h') return 'in the first half';
   if (modalTf === '2h') return 'in the second half';
   if (modalTf === 'home') return 'at home';
   if (modalTf === 'away') return 'on the road';
@@ -2557,7 +2580,11 @@ async function fetchAllTeamsStat(group, tf, year) {
   if (tf === 'season') suffix = '&stats=season';
   else if (isSplitTf(tf)) suffix = `&stats=statSplits&sitCodes=${tf}`;
   else if (tf === 'home' || tf === 'away') suffix = `&stats=statSplits&sitCodes=${tf === 'home' ? 'h' : 'a'}`;
-  else if (tf === '2h') {
+  else if (tf === '1h') {
+    const end = await getFirstHalfEnd(year);
+    if (!end) return null;
+    suffix = `&stats=byDateRange&startDate=${year}-02-01&endDate=${end}`;
+  } else if (tf === '2h') {
     const start = await getSecondHalfStart(year);
     if (!start) return null;
     suffix = `&stats=byDateRange&startDate=${start}&endDate=${today}`;
@@ -2580,7 +2607,7 @@ async function paintTeamRankBox() {
     && !isCareerTf(tf) && !isCareerSplit(tf) && !isLastXTf(tf) && !isRangeTf(tf);
   if (!supported) {
     box.innerHTML = `<h3>MLB Rankings</h3><div class="modal-empty">Rankings are available for a single season, ` +
-      `or its last 7/14/30 days, second half, home/road and vs. L/R splits.</div>`;
+      `or its last 7/14/30 days, first/second half, home/road and vs. L/R splits.</div>`;
     return;
   }
   const year = [...modalSeasons][0];

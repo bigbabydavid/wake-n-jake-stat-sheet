@@ -635,6 +635,626 @@
     "2026": 25161
    },
    "source": "FanGraphs Roster Resource, Yankees payroll 2026"
+  },
+  "554430": {
+   "name": "Zack Wheeler",
+   "summary": "3 yr, $126M (2025-27)",
+   "total": 126000000,
+   "years": 3,
+   "start": 2025,
+   "end": 2027,
+   "aav": 42000000,
+   "seasons": {
+    "2026": 42000000,
+    "2027": 42000000
+   },
+   "tags": {
+    "2028": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "656941": {
+   "name": "Kyle Schwarber",
+   "summary": "5 yr, $150M (2026-30)",
+   "total": 150000000,
+   "years": 5,
+   "start": 2026,
+   "end": 2030,
+   "aav": 30000000,
+   "seasons": {
+    "2026": 18000000,
+    "2027": 33000000,
+    "2028": 33000000,
+    "2029": 33000000,
+    "2030": 33000000
+   },
+   "tags": {
+    "2031": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "607208": {
+   "name": "Trea Turner",
+   "summary": "11 yr, $300M (2023-33)",
+   "total": 300000000,
+   "years": 11,
+   "start": 2023,
+   "end": 2033,
+   "aav": 27272727,
+   "seasons": {
+    "2026": 27272727,
+    "2027": 27272727,
+    "2028": 27272727,
+    "2029": 27272727,
+    "2030": 27272727,
+    "2031": 27272728,
+    "2032": 27272728
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "547180": {
+   "name": "Bryce Harper",
+   "summary": "13 yr, $330M (2019-31)",
+   "total": 330000000,
+   "years": 13,
+   "start": 2019,
+   "end": 2031,
+   "aav": 25384615,
+   "seasons": {
+    "2026": 27538462,
+    "2027": 27538462,
+    "2028": 27538462,
+    "2029": 23538462,
+    "2030": 23538462,
+    "2031": 23538462
+   },
+   "tags": {
+    "2032": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "605400": {
+   "name": "Aaron Nola",
+   "summary": "7 yr, $172M (2024-30)",
+   "total": 172000000,
+   "years": 7,
+   "start": 2024,
+   "end": 2030,
+   "aav": 24571429,
+   "seasons": {
+    "2026": 24571429,
+    "2027": 24571429,
+    "2028": 24571429,
+    "2029": 24571429,
+    "2030": 24571429
+   },
+   "tags": {
+    "2031": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "592663": {
+   "name": "J.T. Realmuto",
+   "summary": "3 yr, $45M (2026-28)",
+   "total": 45000000,
+   "years": 3,
+   "start": 2026,
+   "end": 2028,
+   "aav": 15000000,
+   "seasons": {
+    "2026": 15000000,
+    "2027": 15000000,
+    "2028": 15000000
+   },
+   "tags": {
+    "2029": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "650333": {
+   "name": "Luis Arraez",
+   "summary": "1 yr, $12M (2026)",
+   "total": 12000000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 12000000,
+   "seasons": {
+    "2026": 12000000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "666200": {
+   "name": "Jesús Luzardo",
+   "summary": "1 yr, $11M (2026); 5 yr, $135M (2027-31), 2032 club option",
+   "total": 11000000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 11000000,
+   "seasons": {
+    "2026": 11000000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "641745": {
+   "name": "Brad Keller",
+   "summary": "2 yr, $22M (2026-27)",
+   "total": 22000000,
+   "years": 2,
+   "start": 2026,
+   "end": 2027,
+   "aav": 11000000,
+   "seasons": {
+    "2026": 9000000,
+    "2027": 13000000
+   },
+   "tags": {
+    "2028": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "666969": {
+   "name": "Adolis García",
+   "summary": "1 yr, $10M (2026)",
+   "total": 10000000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 10000000,
+   "seasons": {
+    "2026": 10000000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "621237": {
+   "name": "José Alvarado",
+   "summary": "4 yr, $26M (2023-26; 2026 club option exercised); 2025 salary reduced (PED suspension)",
+   "total": 26000000,
+   "years": 4,
+   "start": 2023,
+   "end": 2026,
+   "aav": 9000000,
+   "seasons": {
+    "2026": 9000000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "650911": {
+   "name": "Cristopher Sánchez",
+   "summary": "2 yr, $6.5M (2025-26); 6 yr, $104M (2027-32), 2033 club option; deferrals lower AAV",
+   "total": 104000000,
+   "years": 6,
+   "start": 2027,
+   "end": 2032,
+   "aav": 17333333,
+   "seasons": {
+    "2026": 4000000
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026",
+   "note": "Extension (2027-32) shown; sheet lists only 2026 salary ($4M). Deferrals lower AAV."
+  },
+  "548384": {
+   "name": "Brooks Raley",
+   "summary": "2 yr, $6.25M (2025-26; 2026 club option exercised)",
+   "total": 6250000,
+   "years": 2,
+   "start": 2025,
+   "end": 2026,
+   "aav": 4750000,
+   "seasons": {
+    "2026": 4750000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "641835": {
+   "name": "Tim Mayza",
+   "summary": "1 yr, $1.75M (2026); not fully guaranteed",
+   "total": 1750000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 1750000,
+   "seasons": {
+    "2026": 1750000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "641482": {
+   "name": "Nestor Cortes",
+   "summary": "1 yr, $53.476k (2026); split contract",
+   "total": 53476,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 53476,
+   "seasons": {
+    "2026": 53476
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "664761": {
+   "name": "Alec Bohm",
+   "summary": "1 yr, $10.2M (2026)",
+   "total": 10200000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 10200000,
+   "seasons": {
+    "2026": 10200000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "624641": {
+   "name": "Edmundo Sosa",
+   "summary": "1 yr, $4.4M (2026)",
+   "total": 4400000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 4400000,
+   "seasons": {
+    "2026": 4400000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "661395": {
+   "name": "Jhoan Duran",
+   "summary": "1 yr, $7.5M (2026)",
+   "total": 7500000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 7500000,
+   "seasons": {
+    "2026": 7500000
+   },
+   "tags": {
+    "2027": "ARB 3",
+    "2028": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "681082": {
+   "name": "Bryson Stott",
+   "summary": "1 yr, $5.9M (2026)",
+   "total": 5900000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 5900000,
+   "seasons": {
+    "2026": 5900000
+   },
+   "tags": {
+    "2027": "ARB 3",
+    "2028": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "669016": {
+   "name": "Brandon Marsh",
+   "summary": "1 yr, $5.2M (2026)",
+   "total": 5200000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 5200000,
+   "seasons": {
+    "2026": 5200000
+   },
+   "tags": {
+    "2027": "ARB 3",
+    "2028": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "596117": {
+   "name": "Garrett Stubbs",
+   "summary": "1 yr, $872.593k (2026); $925k split contract, prorated",
+   "total": 872593,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 872593,
+   "seasons": {
+    "2026": 872593
+   },
+   "tags": {
+    "2027": "ARB 3",
+    "2028": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "621383": {
+   "name": "Tanner Banks",
+   "summary": "1 yr, $1.2M (2026)",
+   "total": 1200000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 1200000,
+   "seasons": {
+    "2026": 1200000
+   },
+   "tags": {
+    "2027": "ARB 2",
+    "2028": "ARB 3",
+    "2029": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "656537": {
+   "name": "Derek Hill",
+   "summary": "1 yr, $900k (2026); split contract; $450k in minors",
+   "total": 900000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 900000,
+   "seasons": {
+    "2026": 900000
+   },
+   "tags": {
+    "2027": "ARB 2",
+    "2028": "ARB 3",
+    "2029": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "665561": {
+   "name": "Rafael Marchán",
+   "summary": "1 yr, $860k (2026)",
+   "total": 860000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 860000,
+   "seasons": {
+    "2026": 860000
+   },
+   "tags": {
+    "2027": "ARB 2",
+    "2028": "ARB 3",
+    "2029": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "650559": {
+   "name": "Bryan De La Cruz",
+   "summary": "1 yr, $420.722k (2026); $900k split contract, prorated",
+   "total": 420722,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 420722,
+   "seasons": {
+    "2026": 420722
+   },
+   "tags": {
+    "2027": "ARB 2",
+    "2028": "ARB 3",
+    "2029": "ARB 4",
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "689147": {
+   "name": "Orion Kerkering",
+   "summary": "1 yr, $805.5k (2026)",
+   "total": 805500,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 805500,
+   "seasons": {
+    "2026": 805500
+   },
+   "tags": {
+    "2027": "ARB 1",
+    "2028": "ARB 2",
+    "2029": "ARB 3",
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "668873": {
+   "name": "Caleb Kilian",
+   "summary": "1 yr, $850k (2026)",
+   "total": 850000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 850000,
+   "seasons": {
+    "2026": 850000
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "ARB 1",
+    "2029": "ARB 2",
+    "2030": "ARB 3",
+    "2031": "ARB 4",
+    "2032": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "663767": {
+   "name": "Chase Shugart",
+   "summary": "1 yr, $791.75k (2026)",
+   "total": 791750,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 791750,
+   "seasons": {
+    "2026": 791750
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "ARB 1",
+    "2029": "ARB 2",
+    "2030": "ARB 3",
+    "2031": "ARB 4",
+    "2032": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "680742": {
+   "name": "Jonathan Bowlan",
+   "summary": "1 yr, $785k (2026)",
+   "total": 785000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 785000,
+   "seasons": {
+    "2026": 785000
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "Pre-ARB",
+    "2029": "ARB 1",
+    "2030": "ARB 2",
+    "2031": "ARB 3",
+    "2032": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "702222": {
+   "name": "Justin Crawford",
+   "summary": "1 yr, $780k (2026)",
+   "total": 780000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 780000,
+   "seasons": {
+    "2026": 780000
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "Pre-ARB",
+    "2029": "ARB 1",
+    "2030": "ARB 2",
+    "2031": "ARB 3",
+    "2032": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "691725": {
+   "name": "Andrew Painter",
+   "summary": "1 yr, $780k (2026)",
+   "total": 780000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 780000,
+   "seasons": {
+    "2026": 780000
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "Pre-ARB",
+    "2029": "ARB 1",
+    "2030": "ARB 2",
+    "2031": "ARB 3",
+    "2032": "ARB 4"
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "592206": {
+   "name": "Nick Castellanos",
+   "summary": "5 yr, $100M (2022-26)",
+   "total": 100000000,
+   "years": 5,
+   "start": 2022,
+   "end": 2026,
+   "aav": 20000000,
+   "seasons": {
+    "2026": 20000000
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "592836": {
+   "name": "Taijuan Walker",
+   "summary": "4 yr, $72M (2023-26)",
+   "total": 72000000,
+   "years": 4,
+   "start": 2023,
+   "end": 2026,
+   "aav": 18000000,
+   "seasons": {
+    "2026": 18000000
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "664353": {
+   "name": "José Urquidy",
+   "summary": "1 yr, $1.5M (2026)",
+   "total": 1500000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 1500000,
+   "seasons": {
+    "2026": 1500000
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "647315": {
+   "name": "Zach Pop",
+   "summary": "1 yr, $507.22k (2026); proration of $900k/$250k split contract",
+   "total": 507220,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 507220,
+   "seasons": {
+    "2026": 507220
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "664238": {
+   "name": "Dylan Moore",
+   "summary": "1 yr, $348.93k (2026); $1.45M, prorated",
+   "total": 348930,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 348930,
+   "seasons": {
+    "2026": 348930
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
   }
  }
 }

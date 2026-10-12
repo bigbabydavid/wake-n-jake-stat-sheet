@@ -1191,19 +1191,6 @@
    },
    "source": "FanGraphs Roster Resource, Phillies payroll 2026"
   },
-  "592206": {
-   "name": "Nick Castellanos",
-   "summary": "5 yr, $100M (2022-26)",
-   "total": 100000000,
-   "years": 5,
-   "start": 2022,
-   "end": 2026,
-   "aav": 20000000,
-   "seasons": {
-    "2026": 20000000
-   },
-   "source": "FanGraphs Roster Resource, Phillies payroll 2026"
-  },
   "592836": {
    "name": "Taijuan Walker",
    "summary": "4 yr, $72M (2023-26)",
@@ -1255,6 +1242,679 @@
     "2026": 348930
    },
    "source": "FanGraphs Roster Resource, Phillies payroll 2026"
+  },
+  "592518": {
+   "name": "Manny Machado",
+   "summary": "11 yr, $350M (2023-33)",
+   "total": 350000000,
+   "years": 11,
+   "start": 2023,
+   "end": 2033,
+   "aav": 31818182,
+   "seasons": {
+    "2026": 25090909,
+    "2027": 39090909,
+    "2028": 39090909,
+    "2029": 39090909,
+    "2030": 39090909,
+    "2031": 39090909,
+    "2032": 39090909
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "593428": {
+   "name": "Xander Bogaerts",
+   "summary": "11 yr, $280M (2023-33)",
+   "total": 280000000,
+   "years": 11,
+   "start": 2023,
+   "end": 2033,
+   "aav": 25454545,
+   "seasons": {
+    "2026": 25454545,
+    "2027": 25454545,
+    "2028": 25454545,
+    "2029": 25454545,
+    "2030": 25454545,
+    "2031": 25454545,
+    "2032": 25454545
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "650633": {
+   "name": "Michael King",
+   "summary": "3 yr, $75M (2026-28), 2027-28 player options",
+   "total": 75000000,
+   "years": 3,
+   "start": 2026,
+   "end": 2028,
+   "aav": 25000000,
+   "seasons": {
+    "2026": 17000000,
+    "2027": 28000000,
+    "2028": 30000000
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "665487": {
+   "name": "Fernando Tatis Jr.",
+   "summary": "14 yr, $338.251M (2021-34)",
+   "total": 338251000,
+   "years": 14,
+   "start": 2021,
+   "end": 2034,
+   "aav": 24285714,
+   "seasons": {
+    "2026": 20714286,
+    "2027": 25714286,
+    "2028": 25714286,
+    "2029": 36714286,
+    "2030": 36714286,
+    "2031": 36714286,
+    "2032": 36714286
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "592662": {
+   "name": "Robbie Ray",
+   "summary": "5 yr, $115M (2022-26)",
+   "total": 115000000,
+   "years": 5,
+   "start": 2022,
+   "end": 2026,
+   "aav": 25000000,
+   "seasons": {
+    "2026": 25000000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "605397": {
+   "name": "Joe Musgrove",
+   "summary": "5 yr, $100M (2023-27)",
+   "total": 100000000,
+   "years": 5,
+   "start": 2023,
+   "end": 2027,
+   "aav": 20000000,
+   "seasons": {
+    "2026": 20000000,
+    "2027": 20000000
+   },
+   "tags": {
+    "2028": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "701538": {
+   "name": "Jackson Merrill",
+   "summary": "9 yr, $135M (2026-34), 2035 club option",
+   "total": 135000000,
+   "years": 9,
+   "start": 2026,
+   "end": 2034,
+   "aav": 15000000,
+   "seasons": {
+    "2026": 2111111,
+    "2027": 7111111,
+    "2028": 9111111,
+    "2029": 11111111,
+    "2030": 21111111,
+    "2031": 21111111,
+    "2032": 21111111
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "601713": {
+   "name": "Nick Pivetta",
+   "summary": "3 yr, $41M (2025-28), 2027 club option; can opt out after 2027",
+   "total": 41000000,
+   "years": 3,
+   "start": 2025,
+   "end": 2028,
+   "aav": 13750000,
+   "seasons": {
+    "2026": 20500000,
+    "2027": 14000000,
+    "2028": 18000000
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "630105": {
+   "name": "Jake Cronenworth",
+   "summary": "7 yr, $80M (2024-30)",
+   "total": 80000000,
+   "years": 7,
+   "start": 2024,
+   "end": 2030,
+   "aav": 11428571,
+   "seasons": {
+    "2026": 12285714,
+    "2027": 12285714,
+    "2028": 12285714,
+    "2029": 12285714,
+    "2030": 12285714
+   },
+   "tags": {
+    "2031": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "673513": {
+   "name": "Yuki Matsui",
+   "summary": "5 yr, $28M (2024-28), 2028 player option; can opt out after 2026",
+   "total": 28000000,
+   "years": 5,
+   "start": 2024,
+   "end": 2028,
+   "aav": 5600000,
+   "seasons": {
+    "2026": 5750000,
+    "2027": 6500000,
+    "2028": 7000000
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "593974": {
+   "name": "Wandy Peralta",
+   "summary": "4 yr, $16.5M (2024-27); may opt out after each year",
+   "total": 16500000,
+   "years": 4,
+   "start": 2024,
+   "end": 2027,
+   "aav": 4125000,
+   "seasons": {
+    "2026": 4450000,
+    "2027": 4450000
+   },
+   "tags": {
+    "2028": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "657656": {
+   "name": "Ramón Laureano",
+   "summary": "2 yr, $10.5M (2025-26; 2026 club option exercised)",
+   "total": 10500000,
+   "years": 2,
+   "start": 2025,
+   "end": 2026,
+   "aav": 6500000,
+   "seasons": {
+    "2026": 6500000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "609280": {
+   "name": "Miguel Andujar",
+   "summary": "1 yr, $4M (2026), 2027 mutual option",
+   "total": 4000000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 4000000,
+   "seasons": {
+    "2026": 1500000,
+    "2027": 8500000
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "823550": {
+   "name": "Sung-Mun Song",
+   "summary": "4 yr, $15M (2026-29), 2029 player option, 2030 mutual option",
+   "total": 15000000,
+   "years": 4,
+   "start": 2026,
+   "end": 2029,
+   "aav": 3750000,
+   "seasons": {
+    "2026": 2833333,
+    "2027": 3333333,
+    "2028": 3833333,
+    "2029": 4000000,
+    "2030": 7000000
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "608337": {
+   "name": "Lucas Giolito",
+   "summary": "1 yr, $2.775M (2026), 2027 mutual option; $3M, prorated",
+   "total": 2775000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 2775401,
+   "seasons": {
+    "2026": 1275401,
+    "2027": 8000000
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "656288": {
+   "name": "Griffin Canning",
+   "summary": "1 yr, $2.5M (2026), 2027 mutual option",
+   "total": 2500000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 2500000,
+   "seasons": {
+    "2026": 1000000,
+    "2027": 5000000
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "621111": {
+   "name": "Walker Buehler",
+   "summary": "1 yr, $1.5M (2026)",
+   "total": 1500000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 1500000,
+   "seasons": {
+    "2026": 1500000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "664034": {
+   "name": "Ty France",
+   "summary": "1 yr, $1.35M (2026)",
+   "total": 1350000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 1350000,
+   "seasons": {
+    "2026": 1350000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "606996": {
+   "name": "Kyle Hart",
+   "summary": "1 yr, $1.2M (2026), 2027 club option",
+   "total": 1200000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 1200000,
+   "seasons": {
+    "2026": 1000000,
+    "2027": 2500000
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "650859": {
+   "name": "Luis Rengifo",
+   "summary": "1 yr, $342.032k (2026); $780k, prorated",
+   "total": 342032,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 342032,
+   "seasons": {
+    "2026": 342032
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "669720": {
+   "name": "Austin Hays",
+   "summary": "1 yr, $208.556k (2026); $780k, prorated",
+   "total": 208556,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 208556,
+   "seasons": {
+    "2026": 208556
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "592094": {
+   "name": "Jason Adam",
+   "summary": "1 yr, $6.675M (2026)",
+   "total": 6675000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 6675000,
+   "seasons": {
+    "2026": 6675000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "663554": {
+   "name": "Casey Mize",
+   "summary": "1 yr, $6.15M (2026)",
+   "total": 6150000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 6150000,
+   "seasons": {
+    "2026": 6150000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "670970": {
+   "name": "Adrian Morejon",
+   "summary": "1 yr, $3.9M (2026)",
+   "total": 3900000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 3900000,
+   "seasons": {
+    "2026": 3900000
+   },
+   "tags": {
+    "2027": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "657757": {
+   "name": "Gavin Sheets",
+   "summary": "1 yr, $4.5M (2026)",
+   "total": 4500000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 4500000,
+   "seasons": {
+    "2026": 4500000
+   },
+   "tags": {
+    "2027": "ARB 3",
+    "2028": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "669134": {
+   "name": "Luis Campusano",
+   "summary": "1 yr, $900k (2026)",
+   "total": 900000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 900000,
+   "seasons": {
+    "2026": 900000
+   },
+   "tags": {
+    "2027": "ARB 3",
+    "2028": "ARB 4",
+    "2029": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "695243": {
+   "name": "Mason Miller",
+   "summary": "1 yr, $4M (2026)",
+   "total": 4000000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 4000000,
+   "seasons": {
+    "2026": 4000000
+   },
+   "tags": {
+    "2027": "ARB 2",
+    "2028": "ARB 3",
+    "2029": "ARB 4",
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "676664": {
+   "name": "JP Sears",
+   "summary": "1 yr, $2.75M (2026)",
+   "total": 2750000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 2750000,
+   "seasons": {
+    "2026": 2750000
+   },
+   "tags": {
+    "2027": "ARB 2",
+    "2028": "ARB 3",
+    "2029": "ARB 4",
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "666023": {
+   "name": "Freddy Fermin",
+   "summary": "1 yr, $2.1M (2026)",
+   "total": 2100000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 2100000,
+   "seasons": {
+    "2026": 2100000
+   },
+   "tags": {
+    "2027": "ARB 2",
+    "2028": "ARB 3",
+    "2029": "ARB 4",
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "669093": {
+   "name": "Jeremiah Estrada",
+   "summary": "1 yr, $809.5k (2026)",
+   "total": 809500,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 809500,
+   "seasons": {
+    "2026": 809500
+   },
+   "tags": {
+    "2027": "ARB 1",
+    "2028": "ARB 2",
+    "2029": "ARB 3",
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "663773": {
+   "name": "Bryan Hoeing",
+   "summary": "1 yr, $807k (2026)",
+   "total": 807000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 807000,
+   "seasons": {
+    "2026": 807000
+   },
+   "tags": {
+    "2027": "ARB 1",
+    "2028": "ARB 2",
+    "2029": "ARB 3",
+    "2030": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "681190": {
+   "name": "Randy Vásquez",
+   "summary": "1 yr, $808.8k (2026)",
+   "total": 808800,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 808800,
+   "seasons": {
+    "2026": 808800
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "ARB 1",
+    "2029": "ARB 2",
+    "2030": "ARB 3",
+    "2031": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "666745": {
+   "name": "Jhony Brito",
+   "summary": "1 yr, $791.5k (2026)",
+   "total": 791500,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 791500,
+   "seasons": {
+    "2026": 791500
+   },
+   "tags": {
+    "2027": "ARB 1",
+    "2028": "ARB 2",
+    "2029": "ARB 3",
+    "2030": "ARB 4",
+    "2031": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "669392": {
+   "name": "Samad Taylor",
+   "summary": "1 yr, $790k (2026)",
+   "total": 790000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 790000,
+   "seasons": {
+    "2026": 790000
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "Pre-ARB",
+    "2029": "ARB 1",
+    "2030": "ARB 2",
+    "2031": "ARB 3",
+    "2032": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "699134": {
+   "name": "Bradgley Rodriguez",
+   "summary": "1 yr, $782.8k (2026)",
+   "total": 782800,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 782800,
+   "seasons": {
+    "2026": 782800
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "Pre-ARB",
+    "2029": "ARB 1",
+    "2030": "ARB 2",
+    "2031": "ARB 3",
+    "2032": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "806956": {
+   "name": "Ethan Salas",
+   "summary": "1 yr, $780k (2026)",
+   "total": 780000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 780000,
+   "seasons": {
+    "2026": 780000
+   },
+   "tags": {
+    "2027": "Pre-ARB",
+    "2028": "Pre-ARB",
+    "2029": "Pre-ARB",
+    "2030": "ARB 1",
+    "2031": "ARB 2",
+    "2032": "ARB 3"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "592206": {
+   "name": "Nick Castellanos",
+   "summary": "5 yr, $100M (2022-26)",
+   "total": 100000000,
+   "years": 5,
+   "start": 2022,
+   "end": 2026,
+   "aav": 20000000,
+   "seasons": {
+    "2026": 20000000
+   },
+   "source": "FanGraphs Roster Resource, Phillies payroll 2026",
+   "note": "Released by Phillies; Padres payroll lists a separate 1 yr, $780k (2026) deal."
+  },
+  "608566": {
+   "name": "Germán Márquez",
+   "summary": "1 yr, $1.75M (2026)",
+   "total": 1750000,
+   "years": 1,
+   "start": 2026,
+   "end": 2026,
+   "aav": 1750000,
+   "seasons": {
+    "2026": 1000000
+   },
+   "tags": {
+    "2027": "TBD"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
+  },
+  "506433": {
+   "name": "Yu Darvish",
+   "summary": "6 yr, $93M (2023-28)",
+   "total": 93000000,
+   "years": 6,
+   "start": 2023,
+   "end": 2028,
+   "aav": 15500000,
+   "seasons": {
+    "2026": 1000000,
+    "2027": 15000000,
+    "2028": 15000000
+   },
+   "tags": {
+    "2029": "FREE AGENT"
+   },
+   "source": "FanGraphs Roster Resource, Padres payroll 2026"
   }
  }
 }

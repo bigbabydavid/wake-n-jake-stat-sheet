@@ -1,0 +1,1197 @@
+{
+ "_readme": "Projected 2027 arbitration salaries from mlbtraderumors.com (not official). Keyed by MLB player id: name, proj (dollars), optional note. A projection only fills 2027 when contracts.json has no real 2027 dollar amount. Delete or edit an entry when the figure becomes official.",
+ "season": 2027,
+ "source": "mlbtraderumors.com",
+ "players": {
+  "663457": {
+   "name": "Lars Nootbaar",
+   "proj": 6300000
+  },
+  "656976": {
+   "name": "Pavin Smith",
+   "proj": 2500000
+  },
+  "672515": {
+   "name": "Gabriel Moreno",
+   "proj": 6100000
+  },
+  "669194": {
+   "name": "Ryne Nelson",
+   "proj": 3400000
+  },
+  "669127": {
+   "name": "Shea Langeliers",
+   "proj": 8700000
+  },
+  "665622": {
+   "name": "Luis Medina",
+   "proj": 1400000
+  },
+  "680869": {
+   "name": "Zack Gelof",
+   "proj": 2900000
+  },
+  "663687": {
+   "name": "Hogan Harris",
+   "proj": 2300000
+  },
+  "669276": {
+   "name": "Dylan Lee",
+   "proj": 4200000
+  },
+  "675916": {
+   "name": "James Karinchak",
+   "proj": 1100000
+  },
+  "666214": {
+   "name": "Joey Wentz",
+   "proj": 900000
+  },
+  "675627": {
+   "name": "Michael Grove",
+   "proj": 1000000
+  },
+  "663897": {
+   "name": "Luke Williams",
+   "proj": 900000
+  },
+  "693821": {
+   "name": "Bryce Elder",
+   "proj": 4000000
+  },
+  "665750": {
+   "name": "Leody Taveras",
+   "proj": 3700000
+  },
+  "642585": {
+   "name": "Félix Bautista",
+   "proj": 2400000
+  },
+  "676051": {
+   "name": "Codi Heuer",
+   "proj": 1100000
+  },
+  "683002": {
+   "name": "Gunnar Henderson",
+   "proj": 14100000
+  },
+  "544150": {
+   "name": "Albert Suárez",
+   "proj": 1100000
+  },
+  "676059": {
+   "name": "Jordan Westburg",
+   "proj": 1500000
+  },
+  "681297": {
+   "name": "Colton Cowser",
+   "proj": 2200000
+  },
+  "656557": {
+   "name": "Tanner Houck",
+   "proj": 4100000
+  },
+  "670912": {
+   "name": "Johan Oviedo",
+   "proj": 1800000
+  },
+  "668939": {
+   "name": "Adley Rutschman",
+   "proj": 9100000
+  },
+  "680776": {
+   "name": "Jarren Duran",
+   "proj": 11100000
+  },
+  "642201": {
+   "name": "Eli White",
+   "proj": 1400000
+  },
+  "676710": {
+   "name": "Kutter Crawford",
+   "proj": 2800000
+  },
+  "657136": {
+   "name": "Connor Wong",
+   "proj": 2000000
+  },
+  "663853": {
+   "name": "Romy González",
+   "proj": 1800000
+  },
+  "671213": {
+   "name": "Triston Casas",
+   "proj": 1700000
+  },
+  "655316": {
+   "name": "Andruw Monasterio",
+   "proj": 1600000
+  },
+  "677161": {
+   "name": "Zack Kelly",
+   "proj": 800000
+  },
+  "669711": {
+   "name": "Greg Weissert",
+   "proj": 1200000
+  },
+  "677800": {
+   "name": "Wilyer Abreu",
+   "proj": 4600000
+  },
+  "669062": {
+   "name": "Erik Miller",
+   "proj": 1500000
+  },
+  "686580": {
+   "name": "Justin Slaten",
+   "proj": 1200000
+  },
+  "663330": {
+   "name": "Jahmai Jones",
+   "proj": 900000
+  },
+  "594027": {
+   "name": "Tyron Guerrero",
+   "proj": 1100000
+  },
+  "657006": {
+   "name": "Justin Steele",
+   "proj": 6800000
+  },
+  "665795": {
+   "name": "Edward Cabrera",
+   "proj": 4800000
+  },
+  "666129": {
+   "name": "Braxton Garrett",
+   "proj": 1600000
+  },
+  "665871": {
+   "name": "Javier Assad",
+   "proj": 2300000,
+   "note": "Cubs hold a $3.3MM option"
+  },
+  "592122": {
+   "name": "Tyler Austin",
+   "proj": 1300000
+  },
+  "665804": {
+   "name": "Miguel Amaya",
+   "proj": 1700000
+  },
+  "672356": {
+   "name": "Gabriel Arias",
+   "proj": 1300000
+  },
+  "669020": {
+   "name": "Ryan Rolison",
+   "proj": 1100000
+  },
+  "681799": {
+   "name": "Ethan Roberts",
+   "proj": 800000
+  },
+  "683737": {
+   "name": "Michael Busch",
+   "proj": 5400000
+  },
+  "676962": {
+   "name": "Ben Brown",
+   "proj": 1300000
+  },
+  "694037": {
+   "name": "Daniel Palencia",
+   "proj": 1200000
+  },
+  "663698": {
+   "name": "Joey Bart",
+   "proj": 2900000
+  },
+  "623211": {
+   "name": "Huascar Brazobán",
+   "proj": 1600000
+  },
+  "686668": {
+   "name": "Brenton Doyle",
+   "proj": 3600000
+  },
+  "678246": {
+   "name": "Miguel Vargas",
+   "proj": 5400000
+  },
+  "669684": {
+   "name": "Chris Murphy",
+   "proj": 900000
+  },
+  "673929": {
+   "name": "Jordan Leasure",
+   "proj": 1000000
+  },
+  "622088": {
+   "name": "Tejay Antone",
+   "proj": 1500000
+  },
+  "666157": {
+   "name": "Nick Lodolo",
+   "proj": 5700000
+  },
+  "668933": {
+   "name": "Graham Ashcraft",
+   "proj": 2200000
+  },
+  "663574": {
+   "name": "Tony Santillan",
+   "proj": 2500000
+  },
+  "668715": {
+   "name": "Spencer Steer",
+   "proj": 5700000
+  },
+  "668709": {
+   "name": "JJ Bleday",
+   "proj": 4800000
+  },
+  "680574": {
+   "name": "Matt McLain",
+   "proj": 4000000
+  },
+  "682227": {
+   "name": "Brandon Williamson",
+   "proj": 1300000
+  },
+  "671096": {
+   "name": "Andrew Abbott",
+   "proj": 4500000
+  },
+  "682829": {
+   "name": "Elly De La Cruz",
+   "proj": 7900000
+  },
+  "665828": {
+   "name": "Oswaldo Cabrera",
+   "proj": 1100000
+  },
+  "667472": {
+   "name": "Dane Myers",
+   "proj": 1500000
+  },
+  "666176": {
+   "name": "Jo Adell",
+   "proj": 9600000
+  },
+  "680757": {
+   "name": "Steven Kwan",
+   "proj": 11300000
+  },
+  "670059": {
+   "name": "Colin Holderman",
+   "proj": 2300000
+  },
+  "681807": {
+   "name": "David Fry",
+   "proj": 1900000
+  },
+  "670036": {
+   "name": "Matt Festa",
+   "proj": 1500000
+  },
+  "672275": {
+   "name": "Patrick Bailey",
+   "proj": 2300000
+  },
+  "668909": {
+   "name": "Gavin Williams",
+   "proj": 4800000
+  },
+  "663368": {
+   "name": "Blake Perkins",
+   "proj": 900000
+  },
+  "683769": {
+   "name": "Hunter Gaddis",
+   "proj": 2200000
+  },
+  "682120": {
+   "name": "Tim Herrin",
+   "proj": 1300000
+  },
+  "677587": {
+   "name": "Brayan Rocchio",
+   "proj": 3100000
+  },
+  "671922": {
+   "name": "Cade Smith",
+   "proj": 5500000
+  },
+  "677944": {
+   "name": "Slade Cecconi",
+   "proj": 2000000
+  },
+  "623474": {
+   "name": "Jimmy Herget",
+   "proj": 2400000
+  },
+  "664983": {
+   "name": "Jake McCarthy",
+   "proj": 4600000
+  },
+  "663372": {
+   "name": "Ryan Feltner",
+   "proj": 3800000
+  },
+  "657514": {
+   "name": "Brennan Bernardino",
+   "proj": 1600000
+  },
+  "696100": {
+   "name": "Hunter Goodman",
+   "proj": 6200000
+  },
+  "687597": {
+   "name": "Jordan Beck",
+   "proj": 1200000
+  },
+  "676684": {
+   "name": "Will Vest",
+   "proj": 4400000
+  },
+  "656716": {
+   "name": "Zach McKinstry",
+   "proj": 5000000
+  },
+  "663837": {
+   "name": "Matt Vierling",
+   "proj": 3700000
+  },
+  "682985": {
+   "name": "Riley Greene",
+   "proj": 9300000
+  },
+  "679529": {
+   "name": "Spencer Torkelson",
+   "proj": 7700000
+  },
+  "681481": {
+   "name": "Kerry Carpenter",
+   "proj": 4100000
+  },
+  "663947": {
+   "name": "Tyler Holton",
+   "proj": 2400000
+  },
+  "689225": {
+   "name": "Beau Brieske",
+   "proj": 1500000
+  },
+  "681857": {
+   "name": "Reese Olson",
+   "proj": 1500000
+  },
+  "672761": {
+   "name": "Wenceel Pérez",
+   "proj": 1400000
+  },
+  "678009": {
+   "name": "Parker Meadows",
+   "proj": 1000000
+  },
+  "670623": {
+   "name": "Isaac Paredes",
+   "proj": 15000000,
+   "note": "Astros hold a $13.35MM club option"
+  },
+  "663567": {
+   "name": "Peter Lambert",
+   "proj": 4600000
+  },
+  "665161": {
+   "name": "Jeremy Peña",
+   "proj": 13100000
+  },
+  "676694": {
+   "name": "Jake Meyers",
+   "proj": 3600000
+  },
+  "686613": {
+   "name": "Hunter Brown",
+   "proj": 6800000
+  },
+  "673237": {
+   "name": "Yainer Diaz",
+   "proj": 6300000
+  },
+  "669713": {
+   "name": "Hayden Wesneski",
+   "proj": 1800000
+  },
+  "669397": {
+   "name": "Nick Allen",
+   "proj": 1800000
+  },
+  "656986": {
+   "name": "Bennett Sousa",
+   "proj": 1300000
+  },
+  "666211": {
+   "name": "Taylor Trammell",
+   "proj": 1500000
+  },
+  "669854": {
+   "name": "Ronel Blanco",
+   "proj": 1400000
+  },
+  "664728": {
+   "name": "Kyle Isbel",
+   "proj": 3500000
+  },
+  "663878": {
+   "name": "Nate Pearson",
+   "proj": 2000000
+  },
+  "683232": {
+   "name": "Nick Mears",
+   "proj": 2200000
+  },
+  "656638": {
+   "name": "Alex Lange",
+   "proj": 1700000
+  },
+  "663738": {
+   "name": "Daniel Lynch IV",
+   "proj": 1800000
+  },
+  "686681": {
+   "name": "Michael Massey",
+   "proj": 3200000
+  },
+  "543238": {
+   "name": "Anthony Gose",
+   "proj": 1100000
+  },
+  "663704": {
+   "name": "James McArthur",
+   "proj": 800000
+  },
+  "677976": {
+   "name": "Randy Dobnak",
+   "proj": 2300000
+  },
+  "668674": {
+   "name": "Lucas Erceg",
+   "proj": 2300000
+  },
+  "679525": {
+   "name": "Alec Marsh",
+   "proj": 1100000
+  },
+  "672282": {
+   "name": "Reid Detmers",
+   "proj": 7500000
+  },
+  "642350": {
+   "name": "Jose Siri",
+   "proj": 2300000
+  },
+  "666139": {
+   "name": "Josh Lowe",
+   "proj": 3600000
+  },
+  "623168": {
+   "name": "Tyler Heineman",
+   "proj": 1500000
+  },
+  "642048": {
+   "name": "Tayler Saucedo",
+   "proj": 1500000
+  },
+  "687263": {
+   "name": "Zach Neto",
+   "proj": 9800000
+  },
+  "680570": {
+   "name": "Grayson Rodriguez",
+   "proj": 2100000
+  },
+  "690829": {
+   "name": "Ben Joyce",
+   "proj": 1100000
+  },
+  "694384": {
+   "name": "Nolan Schanuel",
+   "proj": 3000000
+  },
+  "672724": {
+   "name": "Oswald Peraza",
+   "proj": 1400000
+  },
+  "696147": {
+   "name": "Sam Bachman",
+   "proj": 1100000
+  },
+  "592779": {
+   "name": "Brock Stewart",
+   "proj": 1800000
+  },
+  "664776": {
+   "name": "Jake Cousins",
+   "proj": 1000000
+  },
+  "669743": {
+   "name": "Alex Call",
+   "proj": 1900000
+  },
+  "686218": {
+   "name": "Emmet Sheehan",
+   "proj": 2100000
+  },
+  "694813": {
+   "name": "Gavin Stone",
+   "proj": 1200000
+  },
+  "681624": {
+   "name": "Andy Pages",
+   "proj": 4900000
+  },
+  "669622": {
+   "name": "Anthony Bender",
+   "proj": 3400000
+  },
+  "677053": {
+   "name": "Andrew Nardi",
+   "proj": 1100000
+  },
+  "676974": {
+   "name": "Max Meyer",
+   "proj": 2700000
+  },
+  "676534": {
+   "name": "Calvin Faucher",
+   "proj": 2900000
+  },
+  "691587": {
+   "name": "Eury Pérez",
+   "proj": 3200000
+  },
+  "672640": {
+   "name": "Otto Lopez",
+   "proj": 5400000
+  },
+  "676604": {
+   "name": "Tyler Zuber",
+   "proj": 900000
+  },
+  "665923": {
+   "name": "Esteury Ruiz",
+   "proj": 1300000
+  },
+  "669364": {
+   "name": "Xavier Edwards",
+   "proj": 3500000
+  },
+  "680767": {
+   "name": "Victor Vodnik",
+   "proj": 1400000
+  },
+  "669065": {
+   "name": "Kyle Stowers",
+   "proj": 3200000
+  },
+  "683734": {
+   "name": "Andrew Vaughn",
+   "proj": 8500000
+  },
+  "661388": {
+   "name": "William Contreras",
+   "proj": 14600000,
+   "note": "Brewers hold $14.5MM club option"
+  },
+  "669060": {
+   "name": "Bryse Wilson",
+   "proj": 1100000
+  },
+  "656730": {
+   "name": "Trevor Megill",
+   "proj": 8000000
+  },
+  "672582": {
+   "name": "Angel Zerpa",
+   "proj": 1300000
+  },
+  "669003": {
+   "name": "Garrett Mitchell",
+   "proj": 2700000
+  },
+  "668930": {
+   "name": "Brice Turang",
+   "proj": 9500000
+  },
+  "668731": {
+   "name": "Akil Baddoo",
+   "proj": 1300000
+  },
+  "669084": {
+   "name": "DL Hall",
+   "proj": 1000000
+  },
+  "686217": {
+   "name": "Sal Frelick",
+   "proj": 2400000
+  },
+  "687401": {
+   "name": "Joey Ortiz",
+   "proj": 2400000
+  },
+  "666310": {
+   "name": "Bo Naylor",
+   "proj": 1500000
+  },
+  "666152": {
+   "name": "David Hamilton",
+   "proj": 1600000
+  },
+  "681982": {
+   "name": "Grant Anderson",
+   "proj": 1000000
+  },
+  "657649": {
+   "name": "Jared Koenig",
+   "proj": 900000
+  },
+  "682990": {
+   "name": "Quinn Priester",
+   "proj": 1300000
+  },
+  "607455": {
+   "name": "Anthony Banda",
+   "proj": 2300000
+  },
+  "665152": {
+   "name": "Dean Kremer",
+   "proj": 6500000
+  },
+  "641927": {
+   "name": "Bailey Ober",
+   "proj": 6900000
+  },
+  "657746": {
+   "name": "Joe Ryan",
+   "proj": 9600000,
+   "note": "Current deal has $13MM mutual option for 2027 with $100K buyout"
+  },
+  "663616": {
+   "name": "Trevor Larnach",
+   "proj": 6300000
+  },
+  "668904": {
+   "name": "Royce Lewis",
+   "proj": 5100000
+  },
+  "663485": {
+   "name": "Cole Sands",
+   "proj": 1300000
+  },
+  "667297": {
+   "name": "Tommy Nance",
+   "proj": 1200000
+  },
+  "665019": {
+   "name": "Kody Clemens",
+   "proj": 3600000
+  },
+  "671737": {
+   "name": "Taj Bradley",
+   "proj": 4500000
+  },
+  "672335": {
+   "name": "Cionel Pérez",
+   "proj": 1200000
+  },
+  "656731": {
+   "name": "Tylor Megill",
+   "proj": 2500000
+  },
+  "666624": {
+   "name": "Christopher Morel",
+   "proj": 2100000
+  },
+  "682626": {
+   "name": "Francisco Alvarez",
+   "proj": 4100000
+  },
+  "657585": {
+   "name": "Reed Garrett",
+   "proj": 1300000
+  },
+  "681810": {
+   "name": "Austin Warren",
+   "proj": 1200000
+  },
+  "668901": {
+   "name": "Mark Vientos",
+   "proj": 2400000
+  },
+  "683146": {
+   "name": "Brett Baty",
+   "proj": 2500000
+  },
+  "665506": {
+   "name": "Cristian Pache",
+   "proj": 800000
+  },
+  "673380": {
+   "name": "Dedniel Núñez",
+   "proj": 900000
+  },
+  "657376": {
+   "name": "Clarke Schmidt",
+   "proj": 4500000
+  },
+  "671277": {
+   "name": "Luis García Jr.",
+   "proj": 11000000
+  },
+  "677960": {
+   "name": "Ryan Weathers",
+   "proj": 3100000
+  },
+  "518585": {
+   "name": "Fernando Cruz",
+   "proj": 2300000
+  },
+  "676609": {
+   "name": "José Caballero",
+   "proj": 3700000
+  },
+  "683011": {
+   "name": "Anthony Volpe",
+   "proj": 4000000
+  },
+  "661563": {
+   "name": "Luis Gil",
+   "proj": 2300000
+  },
+  "671218": {
+   "name": "Heliot Ramos",
+   "proj": 3200000
+  },
+  "669224": {
+   "name": "Austin Wells",
+   "proj": 2600000
+  },
+  "596117": {
+   "name": "Garrett Stubbs",
+   "proj": 1000000
+  },
+  "669016": {
+   "name": "Brandon Marsh",
+   "proj": 8300000
+  },
+  "661395": {
+   "name": "Jhoan Duran",
+   "proj": 10900000
+  },
+  "681082": {
+   "name": "Bryson Stott",
+   "proj": 9200000
+  },
+  "621383": {
+   "name": "Tanner Banks",
+   "proj": 1400000
+  },
+  "656537": {
+   "name": "Derek Hill",
+   "proj": 1500000
+  },
+  "665561": {
+   "name": "Rafael Marchán",
+   "proj": 1000000
+  },
+  "650559": {
+   "name": "Bryan De La Cruz",
+   "proj": 1200000
+  },
+  "689147": {
+   "name": "Orion Kerkering",
+   "proj": 1500000
+  },
+  "670990": {
+   "name": "Yohan Ramírez",
+   "proj": 1500000
+  },
+  "665833": {
+   "name": "Oneil Cruz",
+   "proj": 6300000
+  },
+  "669387": {
+   "name": "Carmen Mlodzinski",
+   "proj": 1600000
+  },
+  "669707": {
+   "name": "Jared Triolo",
+   "proj": 1800000
+  },
+  "682848": {
+   "name": "Endy Rodríguez",
+   "proj": 1200000
+  },
+  "680779": {
+   "name": "Henry Davis",
+   "proj": 1400000
+  },
+  "693304": {
+   "name": "Nick Gonzales",
+   "proj": 3100000
+  },
+  "683003": {
+   "name": "Jared Jones",
+   "proj": 2100000
+  },
+  "694973": {
+   "name": "Paul Skenes",
+   "proj": 7200000
+  },
+  "687462": {
+   "name": "Spencer Horwitz",
+   "proj": 2500000
+  },
+  "657757": {
+   "name": "Gavin Sheets",
+   "proj": 6500000
+  },
+  "669134": {
+   "name": "Luis Campusano",
+   "proj": 1700000
+  },
+  "695243": {
+   "name": "Mason Miller",
+   "proj": 8100000
+  },
+  "666023": {
+   "name": "Freddy Fermin",
+   "proj": 2600000
+  },
+  "663773": {
+   "name": "Bryan Hoeing",
+   "proj": 800000
+  },
+  "676664": {
+   "name": "JP Sears",
+   "proj": 2800000
+  },
+  "669093": {
+   "name": "Jeremiah Estrada",
+   "proj": 1300000
+  },
+  "666745": {
+   "name": "Jhony Brito",
+   "proj": 800000
+  },
+  "656529": {
+   "name": "Sam Hentges",
+   "proj": 2000000
+  },
+  "668800": {
+   "name": "Andrew Knizner",
+   "proj": 1000000
+  },
+  "666808": {
+   "name": "Camilo Doval",
+   "proj": 6600000
+  },
+  "671345": {
+   "name": "Jason Foley",
+   "proj": 2300000
+  },
+  "592858": {
+   "name": "Rowan Wick",
+   "proj": 800000
+  },
+  "676254": {
+   "name": "Ryan Walker",
+   "proj": 1600000
+  },
+  "669477": {
+   "name": "Casey Schmitt",
+   "proj": 2500000
+  },
+  "676130": {
+   "name": "José Buttó",
+   "proj": 800000
+  },
+  "678495": {
+   "name": "Randy Rodríguez",
+   "proj": 800000
+  },
+  "669302": {
+   "name": "Logan Gilbert",
+   "proj": 15400000
+  },
+  "680977": {
+   "name": "Brendan Donovan",
+   "proj": 6100000
+  },
+  "642100": {
+   "name": "Gabe Speier",
+   "proj": 3300000
+  },
+  "669923": {
+   "name": "George Kirby",
+   "proj": 9800000
+  },
+  "621550": {
+   "name": "Patrick Wisdom",
+   "proj": 1100000
+  },
+  "666374": {
+   "name": "Matt Brash",
+   "proj": 1800000
+  },
+  "670042": {
+   "name": "Luke Raley",
+   "proj": 3100000
+  },
+  "682243": {
+   "name": "Bryce Miller",
+   "proj": 3900000,
+   "note": "Mariners hold a $6.075MM option with $15K buyout"
+  },
+  "693433": {
+   "name": "Bryan Woo",
+   "proj": 5200000
+  },
+  "660825": {
+   "name": "Eduard Bazardo",
+   "proj": 1500000
+  },
+  "678606": {
+   "name": "Jose A. Ferrer",
+   "proj": 1600000
+  },
+  "621074": {
+   "name": "Michael Rucker",
+   "proj": 800000
+  },
+  "686527": {
+   "name": "Dominic Canzone",
+   "proj": 3000000
+  },
+  "681867": {
+   "name": "Cooper Criswell",
+   "proj": 900000
+  },
+  "672841": {
+   "name": "Carlos Vargas",
+   "proj": 800000
+  },
+  "669467": {
+   "name": "Andre Pallante",
+   "proj": 7500000
+  },
+  "669357": {
+   "name": "Nolan Gorman",
+   "proj": 3400000
+  },
+  "676475": {
+   "name": "Alec Burleson",
+   "proj": 8300000
+  },
+  "669461": {
+   "name": "Matthew Liberatore",
+   "proj": 3600000
+  },
+  "691026": {
+   "name": "Masyn Winn",
+   "proj": 3300000
+  },
+  "691023": {
+   "name": "Jordan Walker",
+   "proj": 5100000
+  },
+  "671056": {
+   "name": "Iván Herrera",
+   "proj": 5500000
+  },
+  "686780": {
+   "name": "Pedro Pagés",
+   "proj": 1300000
+  },
+  "681517": {
+   "name": "Kyle Leahy",
+   "proj": 2800000
+  },
+  "663556": {
+   "name": "Shane McClanahan",
+   "proj": 6600000
+  },
+  "663611": {
+   "name": "Nick Madrigal",
+   "proj": 1100000
+  },
+  "669330": {
+   "name": "Tyler Wells",
+   "proj": 4000000
+  },
+  "642121": {
+   "name": "Cole Sulser",
+   "proj": 1900000
+  },
+  "670764": {
+   "name": "Taylor Walls",
+   "proj": 3500000,
+   "note": "Rays hold a $3.1MM club option"
+  },
+  "643377": {
+   "name": "Griffin Jax",
+   "proj": 5700000
+  },
+  "664076": {
+   "name": "Garrett Cleavinger",
+   "proj": 3700000
+  },
+  "663743": {
+   "name": "Nick Fortes",
+   "proj": 3400000
+  },
+  "641329": {
+   "name": "Bryan Baker",
+   "proj": 4100000
+  },
+  "686752": {
+   "name": "Ryan Pepiot",
+   "proj": 3100000
+  },
+  "687330": {
+   "name": "Kevin Kelly",
+   "proj": 2600000
+  },
+  "680700": {
+   "name": "Richie Palacios",
+   "proj": 2000000
+  },
+  "670955": {
+   "name": "Edwin Uceta",
+   "proj": 1500000
+  },
+  "655889": {
+   "name": "Manuel Rodríguez",
+   "proj": 900000
+  },
+  "676356": {
+   "name": "Jonny DeLuca",
+   "proj": 1700000
+  },
+  "669947": {
+   "name": "Jesse Scholtens",
+   "proj": 900000
+  },
+  "666018": {
+   "name": "Jonathan Aranda",
+   "proj": 4100000
+  },
+  "669022": {
+   "name": "MacKenzie Gore",
+   "proj": 8700000
+  },
+  "669394": {
+   "name": "Jake Burger",
+   "proj": 6900000
+  },
+  "677649": {
+   "name": "Ezequiel Durán",
+   "proj": 4000000
+  },
+  "673962": {
+   "name": "Josh Jung",
+   "proj": 5200000
+  },
+  "681351": {
+   "name": "Logan O’Hoppe",
+   "proj": 3100000
+  },
+  "674003": {
+   "name": "Cody Bradford",
+   "proj": 1300000
+  },
+  "676395": {
+   "name": "Robert Garcia",
+   "proj": 1100000
+  },
+  "694671": {
+   "name": "Wyatt Langford",
+   "proj": 3300000
+  },
+  "694497": {
+   "name": "Evan Carter",
+   "proj": 1700000
+  },
+  "656641": {
+   "name": "Jacob Latz",
+   "proj": 3000000
+  },
+  "676391": {
+   "name": "Ernie Clement",
+   "proj": 7600000
+  },
+  "667755": {
+   "name": "José Soriano",
+   "proj": 5600000
+  },
+  "669701": {
+   "name": "Josh Smith",
+   "proj": 3700000
+  },
+  "670102": {
+   "name": "Bowden Francis",
+   "proj": 1300000
+  },
+  "681293": {
+   "name": "Spencer Arrighetti",
+   "proj": 1900000
+  },
+  "686973": {
+   "name": "Louis Varland",
+   "proj": 3800000
+  },
+  "664770": {
+   "name": "Nathan Lukes",
+   "proj": 2100000
+  },
+  "676914": {
+   "name": "Davis Schneider",
+   "proj": 1300000
+  },
+  "680686": {
+   "name": "Josiah Gray",
+   "proj": 1600000
+  },
+  "682928": {
+   "name": "CJ Abrams",
+   "proj": 10200000
+  },
+  "663992": {
+   "name": "Richard Lovelady",
+   "proj": 1700000
+  },
+  "656234": {
+   "name": "Jake Bird",
+   "proj": 1300000
+  },
+  "663623": {
+   "name": "Jake Irvin",
+   "proj": 3400000
+  },
+  "686610": {
+   "name": "Ken Waldichuk",
+   "proj": 1000000
+  },
+  "696285": {
+   "name": "Jacob Young",
+   "proj": 2300000
+  },
+  "680730": {
+   "name": "Mitchell Parker",
+   "proj": 1100000
+  }
+ }
+}

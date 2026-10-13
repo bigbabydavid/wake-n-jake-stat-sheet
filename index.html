@@ -1980,6 +1980,11 @@ async function loadContracts() {
   const r = await fetch('contracts.json?ts=' + Date.now(), { cache: 'no-store' });
   if (!r.ok) throw new Error('HTTP ' + r.status);
   contractsData = await r.json();
+  // Projected 2027 arbitration salaries (MLBTR) — optional side file, never required.
+  try {
+    const ra = await fetch('arb2027.json?ts=' + Date.now(), { cache: 'no-store' });
+    if (ra.ok) { const a = await ra.json(); contractsData.arb = a.players || {}; contractsData.arbSource = a.source || 'mlbtraderumors.com'; contractsData.arbYear = String(a.season || 2027); }
+  } catch (e) { /* no projections file — fine */ }
   return contractsData;
 }
 
@@ -2048,7 +2053,19 @@ async function paintContractPane() {
     return;
   }
   if (modalPid !== pid) return;
-  const c = normalizeContract((data.players || {})[String(pid)]);
+  let c = normalizeContract((data.players || {})[String(pid)]);
+  // Not-yet-official arbitration numbers: a projected figure fills the arb year only when the
+  // contract has no real dollar amount there (so guaranteed money is never overridden).
+  const arbEntry = (data.arb || {})[String(pid)];
+  const arbYear = data.arbYear || '2027', arbSource = data.arbSource || 'mlbtraderumors.com';
+  let projYear = null, projVal = 0;
+  if (arbEntry && +arbEntry.proj > 0 && (!c || !c.seasons.has(arbYear))) {
+    projYear = arbYear; projVal = +arbEntry.proj;
+    if (!c) c = Object.assign(normalizeContract({ seasons: { [arbYear]: projVal }, years: 1, total: projVal, aav: projVal }),
+      { arbOnly: true, summary: `Arbitration-eligible · ${arbYear} projection only` });
+    else c.seasons.set(arbYear, projVal);
+  }
+  const isProj = y => projYear && String(y) === projYear;
   if (!c || !c.seasons.size) {
     box.innerHTML = `<h3>Contract</h3><div class="modal-empty">No contract on file for ${row.name}. ` +
       `Add them to contracts.json (keyed by MLB player id ${pid}).</div>`;
@@ -2075,9 +2092,11 @@ async function paintContractPane() {
       `<div class="modal-line">${headline}</div>` +
       (control ? `<div class="modal-empty" style="margin:4px 0 0">${control}</div>` : '') +
       (c.note ? `<div class="modal-empty" style="margin:4px 0 8px">${c.note}</div>` : '') +
-      `<div class="scope-row"><button type="button" class="tf-pill" id="cPushTotal">Total value · years · AAV</button></div>` +
+      (c.arbOnly ? '' : `<div class="scope-row"><button type="button" class="tf-pill" id="cPushTotal">Total value · years · AAV</button></div>`) +
+      (projYear ? `<div class="scope-row"><button type="button" class="tf-pill" id="cPushProj">Push ${projYear} · projected ${fmtMoney(projVal)} in arbitration</button></div>` +
+        (arbEntry && arbEntry.note ? `<div class="modal-empty" style="margin:2px 0 8px">MLBTR note: ${arbEntry.note}</div>` : '') : '') +
       `<div class="scope-row"><label>AAV in seasons</label>` +
-        yrs.map(y => `<button type="button" class="tf-pill${contractSeasons.has(y) ? ' on' : ''}" data-cy="${y}" title="${fmtMoney(c.seasons.get(y))}">${y} · ${fmtMoney(c.seasons.get(y))}</button>`).join('') +
+        yrs.map(y => `<button type="button" class="tf-pill${contractSeasons.has(y) ? ' on' : ''}" data-cy="${y}" title="${fmtMoney(c.seasons.get(y))}${isProj(y) ? ' (projected, ' + arbSource + ')' : ''}">${y} · ${isProj(y) ? 'proj ' : ''}${fmtMoney(c.seasons.get(y))}</button>`).join('') +
       `</div>` +
       `<div class="scope-row"><button type="button" class="tf-pill" id="cPushAav"${s.length ? '' : ' disabled'}>` +
         `Push AAV · ${spanLabel(s) || 'pick a season'}${s.length ? ` (${fmtMoney(selAvg())})` : ''}</button></div>` +
@@ -2089,7 +2108,14 @@ async function paintContractPane() {
         paint();
       };
     });
-    $('cPushTotal').onclick = () => {
+    const projGraphic = () => ({ label: `Projected ${fmtMoney(projVal)} in arbitration`, splitLabel: '', hitLine: '',
+      sentenceMode: true, sentencePrefix: 'Projected', cells: [['in arbitration', fmtMoney(projVal)]], rankNote: arbSource });
+    if (projYear) $('cPushProj').onclick = () => {
+      const data = projGraphic();
+      pushOnAir(pid, 'bat', row, data);
+      $('modalDlNote').textContent = `On air: ${data.label}`;
+    };
+    if ($('cPushTotal')) $('cPushTotal').onclick = () => {
       const data = { label: `${fmtMoney(c.total)} / ${c.years} yrs / ${fmtMoney(c.aav)} AAV`, splitLabel: 'CONTRACT',
         hitLine: c.start && c.end ? `${c.start}–${c.end}` : '',
         cells: [['TOTAL', fmtMoney(c.total)], ['YEARS', String(c.years)], ['AAV', fmtMoney(c.aav)]] };
@@ -2099,7 +2125,7 @@ async function paintContractPane() {
     $('cPushAav').onclick = () => {
       const s2 = sel(); if (!s2.length) return;
       const span = spanLabel(s2);
-      const data = { label: `${span} AAV ${fmtMoney(selAvg())}`, splitLabel: `CONTRACT · ${span}`, hitLine: '',
+      const data = projYear && s2.length === 1 && isProj(s2[0]) ? projGraphic() : { label: `${span} AAV ${fmtMoney(selAvg())}`, splitLabel: `CONTRACT · ${span}` + (projYear && s2.includes(projYear) ? ` · ${projYear} PROJECTED (${arbSource.toUpperCase()})` : ''), hitLine: '',
         cells: s2.length === 1 ? [['AAV', fmtMoney(selAvg())]]
           : [['AAV', fmtMoney(selAvg())], ['SEASONS', String(s2.length)], ['TOTAL', fmtMoney(selTotal())]] };
       pushOnAir(pid, 'bat', row, data);
@@ -3215,17 +3241,26 @@ async function renderLowerThird(data, row, pid) {
   if (data.sentenceMode) {
     const [[words, value]] = data.cells;
     let size = 76;
+    const pre = data.sentencePrefix ? data.sentencePrefix.toUpperCase() : '';
     const widthAt = px => {
       ctx.font = `800 ${px}px "Sofia Sans Extra Condensed"`;
-      return ctx.measureText(value).width + px * 0.22 + ctx.measureText(words).width;
+      return ctx.measureText(value).width + px * 0.22 + ctx.measureText(words).width +
+        (pre ? ctx.measureText(pre).width + px * 0.22 : 0);
     };
     while (size > 28 && widthAt(size) > avail) size -= 4;
     ctx.font = `800 ${size}px "Sofia Sans Extra Condensed"`;
     const vW = ctx.measureText(value).width, gap = size * 0.22, wW = ctx.measureText(words).width;
-    let x = startX + (avail - (vW + gap + wW)) / 2;
+    const pW = pre ? ctx.measureText(pre).width + gap : 0;
+    let x = startX + (avail - (pW + vW + gap + wW)) / 2;
+    const baseY = data.rankNote ? H / 2 + 14 : H / 2 + 26;
     ctx.textAlign = 'left';
-    ctx.fillStyle = '#F7C600'; ctx.fillText(value, x, H / 2 + 26);
-    ctx.fillStyle = '#F5F5F0'; ctx.fillText(words, x + vW + gap, H / 2 + 26);
+    if (pre) { ctx.fillStyle = '#F5F5F0'; ctx.fillText(pre, x, baseY); x += pW; }
+    ctx.fillStyle = '#F7C600'; ctx.fillText(value, x, baseY);
+    ctx.fillStyle = '#F5F5F0'; ctx.fillText(words.toUpperCase(), x + vW + gap, baseY);
+    if (data.rankNote) {
+      ctx.font = '700 26px "Sofia Sans Extra Condensed"'; ctx.textAlign = 'center';
+      ctx.fillStyle = '#F7C600'; ctx.fillText(data.rankNote.toUpperCase(), startX + avail / 2, H / 2 + 58);
+    }
     ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
     await drawBrandLockup(ctx, W, H);
     return { canvas, hadPhoto: !!img };
@@ -3459,12 +3494,13 @@ function paintOnAirBar(root, payload) {
     cellsEl.style.paddingLeft = LOGO_RESERVE + 'px';
     cellsEl.style.paddingRight = LOGO_RESERVE + 'px';
     cellsEl.innerHTML = `<div class="lt-sentence-wrap"><div class="lt-sentence-line">` +
-      `<span class="v">${value}</span><span class="w">${words}</span></div>` +
+      (data.sentencePrefix ? `<span class="w pre">${data.sentencePrefix}</span>` : '') +
+      `<span class="v">${value}</span><span class="w post">${words}</span></div>` +
       `${data.rankNote ? `<div class="lt-ranknote">${data.rankNote.toUpperCase()}</div>` : ''}</div>`;
     const line = cellsEl.querySelector('.lt-sentence-line');
-    const vEl = line.querySelector('.v'), wEl = line.querySelector('.w');
+    const vEl = line.querySelector('.v'), wEl = line.querySelector('.w.post'), pEl = line.querySelector('.w.pre');
     let size = 76;
-    const apply = px => { vEl.style.fontSize = px + 'px'; wEl.style.fontSize = px + 'px'; };
+    const apply = px => { vEl.style.fontSize = px + 'px'; wEl.style.fontSize = px + 'px'; if (pEl) pEl.style.fontSize = px + 'px'; };
     apply(size);
     const sentenceAvail = Math.max(200, availW - LOGO_RESERVE);   // both paddings now in play
     while (size > 28 && line.scrollWidth > sentenceAvail) apply(size -= 4);

@@ -404,6 +404,7 @@
     <div class="tf-pills" id="modalTabs" hidden>
       <button type="button" class="tf-pill on" data-tab="stats">Stats</button>
       <button type="button" class="tf-pill" data-tab="contract">Contract</button>
+      <button type="button" class="tf-pill" data-tab="awards">Awards</button>
     </div>
     <div id="statsPane">
     <div class="scope-block" id="seasonPicker"></div>
@@ -437,6 +438,7 @@
     <div id="modalBody" class="modal-body"></div>
     </div>
     <div id="contractPane" class="matchup-box" hidden></div>
+    <div id="awardsPane" class="matchup-box" hidden></div>
     <div class="modal-export-row" id="modalExportRow">
       <button id="modalDownloadBat" class="modal-export-btn" type="button" hidden
         title="Push to OBS and download hitting lower-third PNG">⤓ Download Hitting PNG</button>
@@ -2024,11 +2026,12 @@ function normalizeContract(c) {
 
 function setModalTab(tab) {
   modalTab = tab;
-  const isContract = tab === 'contract';
-  $('statsPane').hidden = isContract;
-  $('contractPane').hidden = !isContract;
+  $('statsPane').hidden = tab !== 'stats';
+  $('contractPane').hidden = tab !== 'contract';
+  $('awardsPane').hidden = tab !== 'awards';
   $('modalTabs').querySelectorAll('button[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
-  if (isContract) paintContractPane();
+  if (tab === 'contract') paintContractPane();
+  if (tab === 'awards') paintAwardsPane();
 }
 $('modalTabs').onclick = e => {
   const b = e.target.closest('button[data-tab]');
@@ -2037,7 +2040,7 @@ $('modalTabs').onclick = e => {
   setModalTab(b.dataset.tab);
   // Clicking back to Stats is a request to show stats, so put the current stat line on air.
   // The Contract tab shows nothing on air until one of its buttons is clicked.
-  if (b.dataset.tab === 'stats' && was === 'contract') { modalArmed = true; autoPushOnAir(); }
+  if (b.dataset.tab === 'stats' && was !== 'stats') { modalArmed = true; autoPushOnAir(); }
 };
 
 async function paintContractPane() {
@@ -2135,6 +2138,123 @@ async function paintContractPane() {
   paint();
 }
 
+// =====================================================================================
+// Awards tab — MLB's Stats API carries every award a person has won (hydrate=awards). The big
+// ones are listed first; the long tail (weekly/monthly honors, minor-league and fan-vote awards)
+// sits in a collapsed list. Pick up to five and push them: one award reads as a sentence
+// ("3× AL MVP", years underneath), several read as a row of counts.
+// =====================================================================================
+let awardSel = new Set();
+const awardsCache = new Map();
+const MAJOR_AWARD_IDS = ['MLBHOF', 'ALMVP', 'NLMVP', 'ALCY', 'NLCY', 'MLBCY', 'ALROY', 'NLROY', 'MLBROY',
+  'WSCHAMP', 'WSMVP', 'ALCSMVP', 'NLCSMVP', 'ASMVP', 'ALAS', 'NLAS', 'ALSS', 'NLSS', 'ALGG', 'NLGG', 'MLGG',
+  'ALPG', 'NLPG', 'WMLBDPOY', 'WALDPOY', 'WNLDPOY', 'WDPOY', 'ALHAA', 'NLHAA', 'MLBAFIRST', 'MLBSECOND',
+  'ALCPOY', 'NLCPOY', 'DHOY', 'ALREL', 'NLREL', 'HRDERBYWIN', 'HRDERBY', 'MLBRC', 'LOUGEHRIG', 'HUTCH',
+  'ALCHALM', 'NLCHALM', 'ALAWARD', 'NLAWARD'];
+const AWARD_PUSH_MAX = 5;
+
+async function fetchPlayerAwards(pid) {
+  if (awardsCache.has(pid)) return awardsCache.get(pid);
+  const d = await jc(`${API}/people/${pid}?hydrate=awards`);
+  const list = ((d.people || [])[0] || {}).awards || [];
+  const groups = new Map();
+  list.forEach(a => {
+    if (!a.id || /^RETIREDUNI/.test(a.id)) return;
+    if (!groups.has(a.id)) groups.set(a.id, { id: a.id, name: a.name || a.id, items: [] });
+    groups.get(a.id).items.push({ season: String(a.season || ''), date: a.date || '' });
+  });
+  groups.forEach(g => {
+    g.count = g.items.length;
+    g.years = [...new Set(g.items.map(i => i.season).filter(Boolean))].sort();
+  });
+  const all = [...groups.values()];
+  const major = MAJOR_AWARD_IDS.map(id => all.find(g => g.id === id)).filter(Boolean);
+  const other = all.filter(g => !MAJOR_AWARD_IDS.includes(g.id)).sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+  const res = { major, other, byId: new Map(all.map(g => [g.id, g])) };
+  awardsCache.set(pid, res);
+  return res;
+}
+
+// 2017, 2018, 2019, 2021 -> "2017–2019 · 2021" (runs of three or more collapse)
+function yearsLabel(years) {
+  const ys = [...years].map(Number).sort((a, b) => a - b);
+  const parts = [];
+  for (let i = 0; i < ys.length;) {
+    let j = i;
+    while (j + 1 < ys.length && ys[j + 1] === ys[j] + 1) j++;
+    if (j - i >= 2) parts.push(`${ys[i]}–${ys[j]}`);
+    else for (let k = i; k <= j; k++) parts.push(String(ys[k]));
+    i = j + 1;
+  }
+  return parts.join(' · ');
+}
+
+function awardGraphic(groups) {
+  if (groups.length === 1) {
+    const g = groups[0];
+    return g.count === 1 && g.years.length
+      ? { label: `${g.years[0]} ${g.name}`, splitLabel: '', hitLine: '', sentenceMode: true, cells: [[g.name, g.years[0]]] }
+      : { label: `${g.count}× ${g.name}`, splitLabel: '', hitLine: '', sentenceMode: true,
+          cells: [[g.name, `${g.count}×`]], rankNote: yearsLabel(g.years) };
+  }
+  return { label: groups.map(g => `${g.count}× ${g.name}`).join(', '), splitLabel: 'AWARDS', hitLine: '',
+    cells: groups.map(g => [g.name, `${g.count}×`]) };
+}
+
+async function paintAwardsPane() {
+  const box = $('awardsPane'), pid = modalPid, row = modalRow;
+  if (!box || !row || row.isTeam) return;
+  box.innerHTML = `<h3>Awards</h3><div class="modal-empty">Loading awards…</div>`;
+  let data;
+  try { data = await fetchPlayerAwards(pid); }
+  catch (e) {
+    if (modalPid !== pid) return;
+    box.innerHTML = `<h3>Awards</h3><div class="modal-empty">Couldn't load awards. Try again in a moment.</div>`;
+    return;
+  }
+  if (modalPid !== pid) return;
+  if (!data.major.length && !data.other.length) {
+    box.innerHTML = `<h3>Awards</h3><div class="modal-empty">No awards on file for ${row.name}.</div>`;
+    return;
+  }
+  const chip = g => `<button type="button" class="tf-pill${awardSel.has(g.id) ? ' on' : ''}" data-aw="${g.id}" ` +
+    `title="${yearsLabel(g.years)}">${g.name}${g.count > 1 ? ` ×${g.count}` : g.years[0] ? ` · ${g.years[0]}` : ''}</button>`;
+  const paint = () => {
+    const chosen = [...awardSel].map(id => data.byId.get(id)).filter(Boolean);
+    const detail = chosen.map(g => `${g.name}: ${yearsLabel(g.years) || '—'}`).join('  ·  ');
+    box.innerHTML = `<h3>Awards</h3>` +
+      (data.major.length ? `<div class="scope-row" style="flex-wrap:wrap">${data.major.map(chip).join('')}</div>` : `<div class="modal-empty">No major awards on file.</div>`) +
+      (data.other.length ? `<details style="margin:8px 0"><summary class="modal-empty" style="cursor:pointer">Other honors (${data.other.length})</summary>` +
+        `<div class="scope-row" style="flex-wrap:wrap;margin-top:6px">${data.other.map(chip).join('')}</div></details>` : '') +
+      (detail ? `<div class="modal-empty" style="margin:4px 0 8px">${detail}</div>` : '') +
+      `<div class="scope-row"><button type="button" class="tf-pill" id="awPushSel"${chosen.length ? '' : ' disabled'}>` +
+        `Push selected${chosen.length ? ` (${chosen.length})` : ''}</button>` +
+      (data.major.length ? `<button type="button" class="tf-pill" id="awPushTop">Push top awards</button>` : '') + `</div>` +
+      `<div class="modal-empty" style="margin-top:6px">Pick up to ${AWARD_PUSH_MAX}. One award goes on air as a sentence with its years; several go on as a row of counts.</div>`;
+    box.querySelectorAll('button[data-aw]').forEach(b => {
+      b.onclick = () => {
+        const id = b.dataset.aw;
+        if (awardSel.has(id)) awardSel.delete(id);
+        else if (awardSel.size < AWARD_PUSH_MAX) awardSel.add(id);
+        paint();
+      };
+    });
+    const go = groups => {
+      const d = awardGraphic(groups);
+      pushOnAir(pid, 'bat', row, d);
+      $('modalDlNote').textContent = `On air: ${d.label}`;
+    };
+    if ($('awPushSel')) $('awPushSel').onclick = () => go(chosen);
+    if ($('awPushTop')) $('awPushTop').onclick = () => {
+      // the headline honors first, most decorated first within them; one award per type family
+      const pick = [...data.major].sort((a, b) => (MAJOR_AWARD_IDS.indexOf(a.id) < 9 ? 0 : 1) - (MAJOR_AWARD_IDS.indexOf(b.id) < 9 ? 0 : 1) ||
+        MAJOR_AWARD_IDS.indexOf(a.id) - MAJOR_AWARD_IDS.indexOf(b.id)).slice(0, 4);
+      go(pick);
+    };
+  };
+  paint();
+}
+
 // Retired/inactive players never carry a uniform number in the header, and once the modal is
 // scoped to a single season we resolve the team/position actually held that season (defaulting
 // to whoever they finished it with) instead of the blank/stale currentTeam the search API gave us.
@@ -2174,6 +2294,7 @@ async function openPlayerModal(pid, oppTeamId) {
   $('modalName').textContent = row.name;
   $('modalSub').textContent = baseModalSubText(row);
   contractSeasons = new Set();
+  awardSel = new Set();
   $('modalTabs').hidden = false;   // players get a Stats | Contract tab strip
   setModalTab('stats');
   refreshModalSub(pid, row);   // async — resolves the season-specific team/position for retired players
@@ -3362,7 +3483,7 @@ function updateOnAirUI(payload) {
 // (hitting for position players, pitching for pitchers) so the OBS bar always tracks what's on screen.
 function autoPushOnAir() {
   if (!modalPid || !modalRow) return;
-  if (modalTab === 'contract') return;   // don't stomp a contract graphic when a stat load finishes
+  if (modalTab !== 'stats') return;   // don't stomp a contract/awards graphic when a stat load finishes
   // The record block pushes its own graphic once it has recounted — don't stomp it here.
   if (modalSticky.kind === 'record' || modalSticky.kind === 'recordTile') return;
   // Re-push the same stat the user last chose, now recomputed for the new scope. If that stat

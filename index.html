@@ -1134,6 +1134,7 @@ const TF = [
   ['vr', 'VS RHP'],
   ['home', 'HOME'],
   ['away', 'ROAD'],
+  ['risp', 'WITH RISP'],   // offensive only — runners in scoring position
 ];
 // Career is all seasons by definition, so the season chips don't apply to it.
 const isCareerTf = tf => tf === 'career';
@@ -1314,6 +1315,7 @@ async function fetchStat(pid, group, tf, year) {
   else if (tf === 'career') { if (isTeamPid(pid)) return null; url = `${statsBase(pid)}/stats?stats=career&group=${group}&sportId=1`; }
   else if (isSplitTf(tf)) url = `${base}&stats=statSplits&sitCodes=${tf}`;
   else if (tf === 'home' || tf === 'away') url = `${base}&stats=statSplits&sitCodes=${tf === 'home' ? 'h' : 'a'}`;
+  else if (tf === 'risp') url = `${base}&stats=statSplits&sitCodes=risp`;
   else if (tf === '1h') {
     const end = await getFirstHalfEnd(year);
     if (!end) return null;
@@ -2621,6 +2623,7 @@ function recordScopeWords() {
   if (modalTf === 'away') return 'on the road';
   if (modalTf === 'vl') return 'vs. lefties';
   if (modalTf === 'vr') return 'vs. righties';
+  if (modalTf === 'risp') return 'with runners in scoring position';
   const years = [...modalSeasons].sort();
   const yLabel = years.length <= 1 ? (years[0] || $('season').value)
     : (years.every((y, i) => i === 0 || +y === +years[i - 1] + 1) ? `${years[0]}\u2013${years[years.length - 1]}` : years.join(', '));
@@ -2727,6 +2730,7 @@ async function fetchAllTeamsStat(group, tf, year) {
   if (tf === 'season') suffix = '&stats=season';
   else if (isSplitTf(tf)) suffix = `&stats=statSplits&sitCodes=${tf}`;
   else if (tf === 'home' || tf === 'away') suffix = `&stats=statSplits&sitCodes=${tf === 'home' ? 'h' : 'a'}`;
+  else if (tf === 'risp') suffix = `&stats=statSplits&sitCodes=risp`;
   else if (tf === '1h') {
     const end = await getFirstHalfEnd(year);
     if (!end) return null;
@@ -2754,12 +2758,12 @@ async function paintTeamRankBox() {
     && !isCareerTf(tf) && !isCareerSplit(tf) && !isLastXTf(tf) && !isRangeTf(tf);
   if (!supported) {
     box.innerHTML = `<h3>MLB Rankings</h3><div class="modal-empty">Rankings are available for a single season, ` +
-      `or its last 7/14/30 days, first/second half, home/road and vs. L/R splits.</div>`;
+      `or its last 7/14/30 days, first/second half, home/road, with RISP and vs. L/R splits.</div>`;
     return;
   }
   const year = [...modalSeasons][0];
   box.innerHTML = `<h3>MLB Rankings</h3><div class="modal-empty">Ranking all 30 clubs…</div>`;
-  const [hit, pit] = await Promise.all(['hitting', 'pitching'].map(g => fetchAllTeamsStat(g, tf, year).catch(() => null)));
+  const [hit, pit] = await Promise.all(['hitting', 'pitching'].map(g => g === 'pitching' && tf === 'risp' ? Promise.resolve(null) : fetchAllTeamsStat(g, tf, year).catch(() => null)));
   if (modalPid !== pid || modalTf !== tf || scopeLabel() !== scopeAtStart) return;   // scope moved on
   const byGroup = { hitting: [], pitching: [] };
   TEAM_RANK_STATS.forEach(([group, key, label, higher]) => {
@@ -2881,7 +2885,11 @@ function paintTfPills() {
   const isTeam = modalRow && modalRow.isTeam;
   // MLB exposes no team-level career totals or careerStatSplits, so those buttons would always
   // come back empty for a club — leave them off rather than offer a dead end.
-  TF.forEach(([key, label]) => { if (isTeam && key === 'career') return; add(key, label); });
+  TF.forEach(([key, label]) => {
+    if (isTeam && key === 'career') return;
+    if (key === 'risp' && modalRow && !wantsBatting(modalRow)) return;   // offensive split: not for pure pitchers
+    add(key, label);
+  });
   if (!isTeam) CAREER_SPLITS.forEach(([key, label]) => add(key, label));
 
   if (isTeam) {
@@ -2908,7 +2916,7 @@ async function loadModalStats(userAction = true) {
   if (row && row.isTeam) paintRecordBox();
   paintTeamRankBox();   // shows MLB rankings for a team, hides itself for a player
   $('modalBody').innerHTML = `<div class="modal-empty">Loading ${scopeAtStart}…</div>`;
-  const doBat = wantsBatting(row), doPit = wantsPitching(row);
+  const doBat = wantsBatting(row), doPit = wantsPitching(row) && tf !== 'risp';   // RISP is an offensive split
   const [bat, pit] = await Promise.all([
     doBat ? fetchScopedStat(pid, 'hitting', tf).catch(() => null) : Promise.resolve(null),
     doPit ? fetchScopedStat(pid, 'pitching', tf).catch(() => null) : Promise.resolve(null),

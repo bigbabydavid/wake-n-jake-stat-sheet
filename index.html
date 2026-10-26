@@ -405,6 +405,7 @@
       <button type="button" class="tf-pill on" data-tab="stats">Stats</button>
       <button type="button" class="tf-pill" data-tab="contract">Contract</button>
       <button type="button" class="tf-pill" data-tab="awards">Awards</button>
+      <button type="button" class="tf-pill" data-tab="managing" hidden>Managing</button>
     </div>
     <div id="statsPane">
     <div class="scope-block" id="seasonPicker"></div>
@@ -434,11 +435,13 @@
     </div>
     <div id="recordBox" class="record-box" hidden></div>
     <div id="teamRankBox" class="matchup-box" hidden></div>
+    <div id="teamMgrBox" class="matchup-box" hidden></div>
     <div id="teamMatchupBox" class="matchup-box" hidden></div>
     <div id="modalBody" class="modal-body"></div>
     </div>
     <div id="contractPane" class="matchup-box" hidden></div>
     <div id="awardsPane" class="matchup-box" hidden></div>
+    <div id="managingPane" class="matchup-box" hidden></div>
     <div class="modal-export-row" id="modalExportRow">
       <button id="modalDownloadBat" class="modal-export-btn" type="button" hidden
         title="Push to OBS and download hitting lower-third PNG">⤓ Download Hitting PNG</button>
@@ -1059,6 +1062,7 @@ async function renderSearchResults(query) {
     addTable(`Search — "${query}"`, null, 'Search failed — try again.');
     return;
   }
+  try { await loadManagers(); } catch (e) { /* managers.json optional — search still works */ }
   if (gen !== __searchGen) return; // superseded by a newer search
   if (posFilter) matches = matches.filter(p => p.pos === posFilter);
   say('');
@@ -1105,7 +1109,7 @@ function paintSearch() {
       currentIndex.set(String(p.id), { id: p.id, name: p.name, pos: p.pos, number: p.number || '', team: tname, teamId: p.teamId, isActive: p.active });
       const tr = el('tr'); tr.dataset.pid = p.id;
       tr.appendChild(el('td', 'num', p.number));
-      tr.appendChild(el('td', 'name', p.name));
+      tr.appendChild(el('td', 'name', p.name + (mgrData && mgrData.m[String(p.id)] ? '  \u00b7  MGR' : '')));
       tr.appendChild(el('td', null, p.pos));
       tr.appendChild(el('td', null, tname));
       tbody.appendChild(tr);
@@ -1767,7 +1771,7 @@ function buildPostseasonGraphicData(row, years, allYears, round, forcedGroup) {
   const label = postseasonLabel(yrs, allYears, round);
   if (group === 'pitching') {
     return { label, splitLabel: withSample(label, combined, 'pitching'), cells: [
-      ['IP', combined.inningsPitched], ['ERA', combined.era], ['WHIP', combined.whip],
+      ['IP', combined.inningsPitched], pitchEraCell(combined), ['WHIP', combined.whip],
       ['W-L', `${combined.wins}-${combined.losses}`],
       ...pitchKBBCells(combined) ] };
   }
@@ -2028,9 +2032,11 @@ function setModalTab(tab) {
   $('statsPane').hidden = tab !== 'stats';
   $('contractPane').hidden = tab !== 'contract';
   $('awardsPane').hidden = tab !== 'awards';
+  $('managingPane').hidden = tab !== 'managing';
   $('modalTabs').querySelectorAll('button[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
   if (tab === 'contract') paintContractPane();
   if (tab === 'awards') paintAwardsPane();
+  if (tab === 'managing') paintManagingPane();
 }
 $('modalTabs').onclick = e => {
   const b = e.target.closest('button[data-tab]');
@@ -2254,10 +2260,160 @@ async function paintAwardsPane() {
   paint();
 }
 
+// =====================================================================================
+// Managers — MLB's API has no managing stats, so managers.json (built from the schedule + coaches
+// endpoints) lists every manager's seasons: one row per manager-stint within a season, with the
+// regular-season W-L-T, postseason W-L and a flag (1 = made postseason, 2 = pennant, 4 = champion).
+// Opening a manager uses the player modal (so playing stats, awards and the header all come along)
+// plus a Managing tab.
+//   row = [year, teamId, teamNameThatYear, w, l, t, postW, postL, flags, fromDate, toDate]
+// =====================================================================================
+let mgrData = null, mgrPromise = null;
+let mgrSel = new Set();
+function loadManagers() {
+  if (mgrData) return Promise.resolve(mgrData);
+  if (!mgrPromise) mgrPromise = fetch('managers.json?ts=' + Date.now(), { cache: 'no-store' })
+    .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(d => { mgrData = d; return d; })
+    .catch(e => { mgrPromise = null; throw e; });
+  return mgrPromise;
+}
+const mgrRecord = (w, l, t) => `${(+w).toLocaleString()}-${(+l).toLocaleString()}${t > 0 ? '-' + t : ''}`;
+const mgrPct = (w, l) => (w + l) ? (w / (w + l)).toFixed(3).replace(/^0/, '') : '.000';
+function mgrSum(rows) {
+  const o = { w: 0, l: 0, t: 0, pw: 0, pl: 0, seasons: new Set(), apps: 0, pennants: 0, titles: 0 };
+  rows.forEach(r => {
+    o.w += r[3]; o.l += r[4]; o.t += r[5]; o.pw += r[6]; o.pl += r[7]; o.seasons.add(r[0]);
+    if (r[8] & 1) o.apps++; if (r[8] & 2) o.pennants++; if (r[8] & 4) o.titles++;
+  });
+  return o;
+}
+const mgrYears = rows => {
+  const ys = [...new Set(rows.map(r => r[0]))].sort((a, b) => a - b);
+  return ys.length ? (ys.length === 1 ? String(ys[0]) : `${ys[0]}\u2013${ys[ys.length - 1]}`) : '';
+};
+
+async function paintManagingPane() {
+  const box = $('managingPane'), pid = modalPid, row = modalRow;
+  if (!box || !row || row.isTeam) return;
+  box.innerHTML = `<h3>Managing</h3><div class="modal-empty">Loading managing record…</div>`;
+  let data;
+  try { data = await loadManagers(); }
+  catch (e) {
+    if (modalPid !== pid) return;
+    box.innerHTML = `<h3>Managing</h3><div class="modal-empty">Couldn't load managers.json. Open the app from its hosted address (it can't be read when opened as a local file).</div>`;
+    return;
+  }
+  if (modalPid !== pid) return;
+  const m = data.m[String(pid)];
+  const rows = ((m && m.r) || []).slice().sort((a, b) => a[0] - b[0] || String(a[9]).localeCompare(String(b[9])));
+  if (!rows.length) {
+    box.innerHTML = `<h3>Managing</h3><div class="modal-empty">No managing record on file for ${row.name}` +
+      `${row.mgr ? ' — he has not managed a regular-season game yet' : ''}.</div>`;
+    return;
+  }
+  const abbr = id => (data.teams && data.teams[id]) || '';
+  const payloadRow = (teamName) => Object.assign({}, row, { pos: 'MANAGER', team: teamName || row.team });
+  const push = (d, teamName) => {
+    pushOnAir(pid, 'bat', payloadRow(teamName), d);
+    $('modalDlNote').textContent = `On air: ${d.label}`;
+  };
+  const lastTeamName = rows[rows.length - 1][2];
+  const career = mgrSum(rows);
+  // one chip per club tenure (a club's seasons in a row collapse into one)
+  const byTeam = new Map();
+  rows.forEach(r => { if (!byTeam.has(r[1])) byTeam.set(r[1], []); byTeam.get(r[1]).push(r); });
+  const recordCells = (sm, yearsText) => [['RECORD', mgrRecord(sm.w, sm.l, sm.t)], ['WIN %', mgrPct(sm.w, sm.l)],
+    ['SEASONS', String(sm.seasons.size)]];
+  const postCells = sm => [['PLAYOFF W-L', `${sm.pw}-${sm.pl}`], ['APPEARANCES', String(sm.apps)],
+    ['PENNANTS', String(sm.pennants)], ['TITLES', String(sm.titles)]];
+  const seasonRows = rows;   // chips are per stint so a midseason change shows both
+  if (!mgrSel.size && seasonRows.length) mgrSel = new Set([String(seasonRows.length - 1)]);
+
+  const paint = () => {
+    const chosen = [...mgrSel].map(i => seasonRows[+i]).filter(Boolean);
+    const chosenSum = mgrSum(chosen);
+    const teamNames = [...new Set(chosen.map(r => r[2]))];
+    const careerHead = `${mgrRecord(career.w, career.l, career.t)} (${mgrPct(career.w, career.l)}) · ${career.seasons.size} season${career.seasons.size === 1 ? '' : 's'}` +
+      (career.titles ? ` · ${career.titles} title${career.titles === 1 ? '' : 's'}` : '') +
+      (career.apps ? ` · ${career.apps} postseason${career.apps === 1 ? '' : 's'}` : '');
+    box.innerHTML = `<h3>Managing</h3>` +
+      `<div class="modal-line">${careerHead}</div>` +
+      `<div class="scope-row"><button type="button" class="tf-pill" id="mgCareer">Push career record</button>` +
+      `<button type="button" class="tf-pill" id="mgPost"${career.apps ? '' : ' disabled'}>Push career postseason</button></div>` +
+      (byTeam.size > 1 || true ? `<div class="scope-row"><label>With a club</label>` + [...byTeam.entries()].map(([tid, rs]) =>
+        `<button type="button" class="tf-pill" data-mt="${tid}" title="${mgrRecord(...(({ w, l, t }) => [w, l, t])(mgrSum(rs)))}">${rs[rs.length - 1][2].replace(/^.* /, '')} ${mgrYears(rs)}</button>`).join('') + `</div>` : '') +
+      `<div class="scope-row" style="flex-wrap:wrap"><label>Seasons</label>` + seasonRows.map((r, i) =>
+        `<button type="button" class="tf-pill${mgrSel.has(String(i)) ? ' on' : ''}" data-ms="${i}" title="${r[2]} ${mgrRecord(r[3], r[4], r[5])}">${r[0]} · ${abbr(r[1]) || r[2]}${r[8] & 4 ? ' 🏆' : ''}</button>`).join('') + `</div>` +
+      `<div class="scope-row"><button type="button" class="tf-pill" id="mgSeason"${chosen.length ? '' : ' disabled'}>` +
+        `Push ${chosen.length > 1 ? 'combined ' : ''}record${chosen.length ? ` · ${mgrYears(chosen)} (${mgrRecord(chosenSum.w, chosenSum.l, chosenSum.t)})` : ''}</button>` +
+      `<button type="button" class="tf-pill" id="mgSeasonPost"${chosenSum.apps ? '' : ' disabled'}>Push postseason for selection</button></div>` +
+      `<div class="modal-empty" style="margin-top:6px">Records come from MLB's schedule data; midseason changes are split by date. Pick several seasons to combine them.</div>`;
+    box.querySelectorAll('button[data-ms]').forEach(b => {
+      b.onclick = () => { const i = b.dataset.ms; if (mgrSel.has(i)) mgrSel.delete(i); else mgrSel.add(i); paint(); };
+    });
+    $('mgCareer').onclick = () => push({ label: `Career record ${mgrRecord(career.w, career.l, career.t)}`, splitLabel: 'MANAGER · CAREER',
+      hitLine: mgrYears(rows), cells: recordCells(career) }, lastTeamName);
+    $('mgPost').onclick = () => push({ label: `Career postseason ${career.pw}-${career.pl}`, splitLabel: 'MANAGER · POSTSEASON',
+      hitLine: career.titles ? `${career.titles} WORLD SERIES TITLE${career.titles === 1 ? '' : 'S'}` : '', cells: postCells(career) }, lastTeamName);
+    box.querySelectorAll('button[data-mt]').forEach(b => {
+      b.onclick = () => {
+        const rs = byTeam.get(+b.dataset.mt) || byTeam.get(b.dataset.mt); const sm = mgrSum(rs); const nm = rs[rs.length - 1][2];
+        push({ label: `${nm} ${mgrRecord(sm.w, sm.l, sm.t)}`, splitLabel: `MANAGER · ${nm.toUpperCase()}`, hitLine: mgrYears(rs),
+          cells: recordCells(sm) }, nm);
+      };
+    });
+    $('mgSeason').onclick = () => {
+      if (!chosen.length) return;
+      const one = chosen.length === 1 ? chosen[0] : null;
+      const flag = one ? (one[8] & 4 ? 'WORLD SERIES CHAMPIONS' : one[8] & 2 ? 'PENNANT WINNERS' : one[8] & 1 ? 'MADE THE POSTSEASON' : '') : '';
+      push({ label: `${mgrYears(chosen)} ${mgrRecord(chosenSum.w, chosenSum.l, chosenSum.t)}`,
+        splitLabel: `MANAGER · ${one ? `${one[0]} ${one[2].toUpperCase()}` : mgrYears(chosen)}`, hitLine: flag,
+        cells: [['RECORD', mgrRecord(chosenSum.w, chosenSum.l, chosenSum.t)], ['WIN %', mgrPct(chosenSum.w, chosenSum.l)],
+          ...(one ? [] : [['SEASONS', String(chosenSum.seasons.size)]])] }, teamNames.length === 1 ? teamNames[0] : lastTeamName);
+    };
+    $('mgSeasonPost').onclick = () => push({ label: `${mgrYears(chosen)} postseason ${chosenSum.pw}-${chosenSum.pl}`,
+      splitLabel: `MANAGER · POSTSEASON · ${mgrYears(chosen)}`,
+      hitLine: chosenSum.titles ? `${chosenSum.titles} WORLD SERIES TITLE${chosenSum.titles === 1 ? '' : 'S'}` : chosenSum.pennants ? 'PENNANT' : '',
+      cells: [['PLAYOFF W-L', `${chosenSum.pw}-${chosenSum.pl}`], ['APPEARANCES', String(chosenSum.apps)]] },
+      teamNames.length === 1 ? teamNames[0] : lastTeamName);
+  };
+  paint();
+}
+
+// Team modal: who manages the club, with a way into his managing/playing/awards modal.
+async function paintTeamMgrBox() {
+  const box = $('teamMgrBox');
+  if (!box) return;
+  if (!modalRow || !modalRow.isTeam) { box.hidden = true; box.innerHTML = ''; return; }
+  const pid = modalPid, teamId = modalRow.teamId, year = [...modalSeasons][0] || String($('season').value);
+  box.hidden = false;
+  box.innerHTML = `<h3>Manager</h3><div class="modal-empty">Looking up the manager…</div>`;
+  let mg = null;
+  try {
+    const d = await jc(`${API}/teams/${teamId}/coaches?season=${year}`);
+    const list = (d.roster || []).filter(r => r.jobId === 'MNGR' || r.jobId === 'NTRM');
+    mg = list.length ? list[list.length - 1] : null;
+  } catch (e) { /* fall through */ }
+  if (modalPid !== pid) return;
+  if (!mg) { box.innerHTML = `<h3>Manager</h3><div class="modal-empty">No manager listed for ${year}.</div>`; return; }
+  const mid = mg.person.id;
+  box.innerHTML = `<h3>Manager</h3><div class="scope-row"><button type="button" class="tf-pill" id="tmMgrOpen">${mg.person.fullName} · open manager stats</button></div>`;
+  $('tmMgrOpen').onclick = async () => {
+    const teamName = modalRow.team;
+    let info = {};
+    try { const pd = await jc(`${API}/people/${mid}`); info = (pd.people || [])[0] || {}; } catch (e) { /* header just gets less detail */ }
+    currentIndex.set(String(mid), { id: mid, name: mg.person.fullName, pos: (info.primaryPosition && info.primaryPosition.abbreviation) || '',
+      number: info.primaryNumber || '', mgrNumber: mg.jerseyNumber || '', team: teamName, teamId, mgr: true });
+    openPlayerModal(mid, null, 'managing');
+  };
+}
+
 // Retired/inactive players never carry a uniform number in the header, and once the modal is
 // scoped to a single season we resolve the team/position actually held that season (defaulting
 // to whoever they finished it with) instead of the blank/stale currentTeam the search API gave us.
 function baseModalSubText(row) {
+  if (row.mgr) return [row.mgrNumber ? `#${row.mgrNumber}` : '', 'MANAGER', row.team].filter(Boolean).join(' \u00b7 ');
   return row.isActive === false
     ? [row.pos, row.team].filter(Boolean).join(' · ')
     : [row.number ? `#${row.number}` : '', row.pos, row.team].filter(Boolean).join(' · ');
@@ -2275,7 +2431,7 @@ async function refreshModalSub(pid, row) {
   $('modalSub').textContent = baseModalSubText(row);
 }
 
-async function openPlayerModal(pid, oppTeamId) {
+async function openPlayerModal(pid, oppTeamId, startTab) {
   const row = currentIndex.get(String(pid));
   if (!row) return;
   modalPid = pid; modalRow = row; modalTf = 'season';
@@ -2294,8 +2450,15 @@ async function openPlayerModal(pid, oppTeamId) {
   $('modalSub').textContent = baseModalSubText(row);
   contractSeasons = new Set();
   awardSel = new Set();
-  $('modalTabs').hidden = false;   // players get a Stats | Contract tab strip
-  setModalTab('stats');
+  mgrSel = new Set();
+  $('modalTabs').hidden = false;   // players get a Stats | Contract | Awards tab strip
+  { const mb = $('modalTabs').querySelector('[data-tab=managing]'); if (mb) mb.hidden = !(mgrData && mgrData.m[String(pid)]); }
+  loadManagers().then(() => {   // managers also get a Managing tab once the history file is in
+    if (modalPid !== pid) return;
+    const mb = $('modalTabs').querySelector('[data-tab=managing]');
+    if (mb) mb.hidden = !(mgrData && mgrData.m[String(pid)]) && !(row && row.mgr);
+  }).catch(() => {});
+  setModalTab(startTab === 'managing' ? 'managing' : 'stats');
   refreshModalSub(pid, row);   // async — resolves the season-specific team/position for retired players
   $('modalBackdrop').hidden = false;
   // size the preview stage now that the modal has a width, then show current on-air state
@@ -2912,6 +3075,7 @@ async function loadModalStats(userAction = true) {
   // the record block reads the same scope selectors, so keep it in step with every stat reload
   if (row && row.isTeam) paintRecordBox();
   paintTeamRankBox();   // shows MLB rankings for a team, hides itself for a player
+  paintTeamMgrBox();    // the club's manager, with a way into his managing record
   $('modalBody').innerHTML = `<div class="modal-empty">Loading ${scopeAtStart}…</div>`;
   const doBat = wantsBatting(row), doPit = wantsPitching(row) && tf !== 'risp';   // RISP is an offensive split
   const [bat, pit] = await Promise.all([
@@ -3053,7 +3217,7 @@ function wireModalExtras() {
         const label = `CAREER WITH ${nickOf(t.name).toUpperCase()}`;
         const st = t.stat;
         const data = group === 'pitching'
-          ? { label, splitLabel: label, cells: [['IP', st.inningsPitched], ['ERA', st.era], ['WHIP', st.whip],
+          ? { label, splitLabel: label, cells: [['IP', st.inningsPitched], pitchEraCell(st), ['WHIP', st.whip],
               ['K', st.strikeOuts], ['BB', st.baseOnBalls], ['W-L', `${st.wins}-${st.losses}`]] }
           : { label, splitLabel: label, hitLine: `${st.hits}-for-${st.atBats}`, cells: [
               ['AVG', st.avg], ['OBP', st.obp], ['SLG', st.slg], ['OPS', st.ops],
@@ -3225,6 +3389,10 @@ function battingGraphicData(st, label, tf) {
 }
 // Pitchers with a tiny sample (3 games or fewer) read better as raw strikeouts/walks than as
 // rates, which swing wildly on a handful of batters — so swap K%/BB% for K and BB counts.
+function pitchEraCell(st) {
+  const g = +(st.gamesPlayed != null ? st.gamesPlayed : st.gamesPitched);
+  return isFinite(g) && g <= 2 ? ['ER', +st.earnedRuns || 0] : ['ERA', st.era];
+}
 function pitchKBBCells(st) {
   const g = +(st.gamesPlayed != null ? st.gamesPlayed : st.gamesPitched);
   return isFinite(g) && g <= 3
@@ -3235,7 +3403,7 @@ function pitchKBBCells(st) {
 function pitchingGraphicData(st, label) {
   if (!st) return null;
   return { label, splitLabel: withSample(label, st, 'pitching'), cells: [
-    ['IP', st.inningsPitched], ['ERA', st.era], ['WHIP', st.whip], ['W-L', `${st.wins}-${st.losses}`],
+    ['IP', st.inningsPitched], pitchEraCell(st), ['WHIP', st.whip], ['W-L', `${st.wins}-${st.losses}`],
     ...pitchKBBCells(st) ] };
 }
 // vs-L/R pitching splits have no ERA/W-L/saves (not a real concept for that split), so swap in

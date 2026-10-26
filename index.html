@@ -1529,8 +1529,7 @@ async function buildLRCompareData(pid, row, tier, forcedGroup) {
           ['BAA', st.avg != null ? st.avg : DASH],
           ['OPS AGAINST', st.ops != null ? st.ops : DASH],
           ['HR', st.homeRuns != null ? +st.homeRuns : DASH],
-          ['K%', kPct(st.strikeOuts, st.battersFaced)],
-          ['BB%', bbPct(st.baseOnBalls, st.battersFaced)],
+          ...pitchKBBCells(st),
         ],
       };
     }
@@ -1582,8 +1581,7 @@ async function buildRISPCompareData(pid, row, tier, forcedGroup) {
           ['BAA', st.avg != null ? st.avg : DASH],
           ['OPS AGAINST', st.ops != null ? st.ops : DASH],
           ['HR', st.homeRuns != null ? +st.homeRuns : DASH],
-          ['K%', kPct(st.strikeOuts, st.battersFaced)],
-          ['BB%', bbPct(st.baseOnBalls, st.battersFaced)],
+          ...pitchKBBCells(st),
         ],
       };
     }
@@ -1771,8 +1769,7 @@ function buildPostseasonGraphicData(row, years, allYears, round, forcedGroup) {
     return { label, splitLabel: withSample(label, combined, 'pitching'), cells: [
       ['IP', combined.inningsPitched], ['ERA', combined.era], ['WHIP', combined.whip],
       ['W-L', `${combined.wins}-${combined.losses}`],
-      ['K%', kPct(combined.strikeOuts, combined.battersFaced)],
-      ['BB%', bbPct(combined.baseOnBalls, combined.battersFaced)] ] };
+      ...pitchKBBCells(combined) ] };
   }
   return { label, splitLabel: withSample(label, combined, 'hitting'), hitLine: `${combined.hits}-for-${combined.atBats}`, cells: [
     ['AVG', combined.avg], ['OBP', combined.obp], ['SLG', combined.slg], ['OPS', combined.ops],
@@ -3226,11 +3223,20 @@ function battingGraphicData(st, label, tf) {
     ...extra];
   return { label, splitLabel: withSample(label, st, 'hitting'), hitLine: `${st.hits}-for-${st.atBats}`, cells };
 }
+// Pitchers with a tiny sample (3 games or fewer) read better as raw strikeouts/walks than as
+// rates, which swing wildly on a handful of batters — so swap K%/BB% for K and BB counts.
+function pitchKBBCells(st) {
+  const g = +(st.gamesPlayed != null ? st.gamesPlayed : st.gamesPitched);
+  return isFinite(g) && g <= 3
+    ? [['K', +st.strikeOuts || 0], ['BB', +st.baseOnBalls || 0]]
+    : [['K%', kPct(st.strikeOuts, st.battersFaced)], ['BB%', bbPct(st.baseOnBalls, st.battersFaced)]];
+}
+
 function pitchingGraphicData(st, label) {
   if (!st) return null;
   return { label, splitLabel: withSample(label, st, 'pitching'), cells: [
     ['IP', st.inningsPitched], ['ERA', st.era], ['WHIP', st.whip], ['W-L', `${st.wins}-${st.losses}`],
-    ['K%', kPct(st.strikeOuts, st.battersFaced)], ['BB%', bbPct(st.baseOnBalls, st.battersFaced)] ] };
+    ...pitchKBBCells(st) ] };
 }
 // vs-L/R pitching splits have no ERA/W-L/saves (not a real concept for that split), so swap in
 // what the API actually gives us: IP/WHIP/K%/BB% plus the opposing batting line (BAA/HR)
@@ -3238,7 +3244,7 @@ function pitchingSplitGraphicData(st, label) {
   if (!st) return null;
   return { label, splitLabel: withSample(label, st, 'pitching'), hitLine: `${st.hits}-for-${st.atBats} allowed`, cells: [
     ['IP', st.inningsPitched], ['WHIP', st.whip], ['BAA', st.avg],
-    ['K%', kPct(st.strikeOuts, st.battersFaced)], ['BB%', bbPct(st.baseOnBalls, st.battersFaced)],
+    ...pitchKBBCells(st),
     ['HR', +st.homeRuns || 0] ] };
 }
 

@@ -940,13 +940,22 @@ async function loadRoster(teamId) {
       roster = (d.roster || []).map(r => ({ ...r, status: r.status || { code: 'A', description: 'Active' } }));
     } catch (e) { say('Could not load that roster: ' + e.message, true); return; }
   }
+  let mgrRows = [];
+  try {
+    const cd = await j(`${API}/teams/${teamId}/coaches?season=${y}`);
+    const ml = (cd.roster || []).filter(r => r.jobId === 'MNGR' || r.jobId === 'NTRM');
+    const seen = new Set();
+    mgrRows = ml.filter(r => !seen.has(r.person.id) && seen.add(r.person.id)).map(r => ({
+      id: r.person.id, name: r.person.fullName, pos: 'MGR', number: r.jerseyNumber || '', group: 'mgr', mgr: true,
+    }));
+  } catch (e) { /* the roster still loads without a manager section */ }
   say('');
   rosterState = {
     team, year: y,
-    rows: roster.map(r => ({
+    rows: mgrRows.concat(roster.map(r => ({
       id: r.person.id, name: r.person.fullName, pos: (r.position && r.position.abbreviation) || '',
       number: r.jerseyNumber || '', group: classifyStatus(r),
-    })),
+    }))),
   };
   sortState = { table: 'roster', key: null, dir: 1 };
   paintRoster();
@@ -981,9 +990,10 @@ function paintRoster() {
   if (!rosterState) return;
   const { team, year, rows } = rosterState;
   currentIndex = new Map();
-  rows.forEach(r => currentIndex.set(String(r.id), { id: r.id, name: r.name, pos: r.pos, number: r.number || '', team: team ? team.name : '', teamId: team ? team.id : null }));
+  rows.forEach(r => currentIndex.set(String(r.id), { id: r.id, name: r.name, pos: r.pos, number: r.number || '', team: team ? team.name : '', teamId: team ? team.id : null, mgr: !!r.mgr, mgrNumber: r.mgr ? (r.number || '') : undefined }));
 
   const groups = [
+    ['mgr', 'MANAGER'],
     ['active', 'ACTIVE ROSTER'],
     ['il', 'INJURED LIST'],
     ['res', '40-MAN / RESERVE'],
@@ -1012,8 +1022,8 @@ function paintRoster() {
       tr.appendChild(el('td', 'num', r.number));
       tr.appendChild(el('td', 'name', r.name));
       tr.appendChild(el('td', null, r.pos));
-      const badgeCls = key === 'active' ? 'active' : key === 'il' ? 'il' : 'res';
-      const badgeText = key === 'active' ? 'Active' : key === 'il' ? 'Injured List' : 'Reserve';
+      const badgeCls = key === 'active' || key === 'mgr' ? 'active' : key === 'il' ? 'il' : 'res';
+      const badgeText = key === 'mgr' ? 'Manager' : key === 'active' ? 'Active' : key === 'il' ? 'Injured List' : 'Reserve';
       tr.appendChild(el('td', null, '')).innerHTML = `<span class="badge ${badgeCls}">${badgeText}</span>`;
       tbody.appendChild(tr);
     });
@@ -1063,6 +1073,17 @@ async function renderSearchResults(query) {
     return;
   }
   try { await loadManagers(); } catch (e) { /* managers.json optional — search still works */ }
+  if (mgrData) {   // managers who never played (or who the people search misses) are matched from managers.json
+    const qk = searchKey(trimmed), have = new Set(matches.map(p => String(p.id)));
+    const lastYr = Math.max(...Object.values(mgrData.m).map(v => v.r.length ? v.r[v.r.length - 1][0] : 0));
+    Object.entries(mgrData.m).forEach(([id, v]) => {
+      if (have.has(id) || !searchKey(v.n).includes(qk)) return;
+      const lr = v.r[v.r.length - 1];
+      const cur = lr && lr[0] === lastYr;
+      matches = matches.concat([{ id: +id, name: v.n, nameKey: searchKey(v.n), pos: 'MGR', number: '', mgr: true,
+        teamId: cur ? lr[1] : null, teamName: cur ? lr[2] : '', active: !!cur }]);
+    });
+  }
   if (gen !== __searchGen) return; // superseded by a newer search
   if (posFilter) matches = matches.filter(p => p.pos === posFilter);
   say('');
@@ -1106,7 +1127,7 @@ function paintSearch() {
                                        : [...players].sort((a, b) => a.name.localeCompare(b.name));
     rows.forEach(p => {
       const tname = teamNameFor(p);
-      currentIndex.set(String(p.id), { id: p.id, name: p.name, pos: p.pos, number: p.number || '', team: tname, teamId: p.teamId, isActive: p.active });
+      currentIndex.set(String(p.id), { id: p.id, name: p.name, pos: p.pos, number: p.number || '', team: tname, teamId: p.teamId, isActive: p.active, mgr: !!p.mgr, mgrNumber: p.mgr ? (p.number || '') : undefined });
       const tr = el('tr'); tr.dataset.pid = p.id;
       tr.appendChild(el('td', 'num', p.number));
       tr.appendChild(el('td', 'name', p.name + (mgrData && mgrData.m[String(p.id)] ? '  \u00b7  MGR' : '')));
@@ -2398,7 +2419,8 @@ async function paintTeamMgrBox() {
   if (modalPid !== pid) return;
   if (!mg) { box.innerHTML = `<h3>Manager</h3><div class="modal-empty">No manager listed for ${year}.</div>`; return; }
   const mid = mg.person.id;
-  box.innerHTML = `<h3>Manager</h3><div class="scope-row"><button type="button" class="tf-pill" id="tmMgrOpen">${mg.person.fullName} · open manager stats</button></div>`;
+  box.innerHTML = `<h3>Manager</h3><div class="scope-row" style="align-items:center;gap:10px"><img src="${headshotURL(mid)}" alt="" style="width:48px;height:48px;border-radius:50%;object-fit:cover;background:#1A1A1A">` +
+    `<button type="button" class="tf-pill" id="tmMgrOpen">${mg.person.fullName} · open manager stats</button></div>`;
   $('tmMgrOpen').onclick = async () => {
     const teamName = modalRow.team;
     let info = {};
@@ -4041,7 +4063,7 @@ $('out').onclick = e => {
   }
   const tr = e.target.closest('tbody tr');
   if (!tr || tr.classList.contains('group') || !tr.dataset.pid) return;
-  openPlayerModal(tr.dataset.pid);
+  { const r0 = currentIndex.get(String(tr.dataset.pid)); openPlayerModal(tr.dataset.pid, null, r0 && r0.mgr ? 'managing' : undefined); }
 };
 $('modalClose').onclick = closeModal;
 $('modalDownloadBat').onclick = () => downloadGraphic('bat');

@@ -1331,7 +1331,16 @@ const statsBase = pid => isTeamPid(pid) ? `${API}/teams/${teamIdFromPid(pid)}` :
 // when it's geometrically centred it reads as off-centre in a circle. MLB's "spots" badge is
 // drawn for exactly this — a circular slot — so it sits true. Cap logo stays as the fallback.
 const teamSpotURL = id => `https://midfield.mlbstatic.com/v1/team/${id}/spots/240`;
-const payloadImageURL = pid => isTeamPid(pid) ? teamSpotURL(teamIdFromPid(pid)) : headshotURL(pid);
+// photos.json overrides MLB's headshot for people it has no photo of: {"<id>": "photos/<file>", "m:<id>": ...}.
+// A "m:<id>" entry is used only for the person's manager graphics (e.g. a manager photo for a former player).
+let photoMap = {};
+fetch('photos.json?ts=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.json() : {}).then(d => {
+  photoMap = d || {};
+  try { if (modalPid && !isTeamPid(modalPid)) $('modalHeadshot').src = payloadImageURL(modalPid, isMgrView()); } catch (e) {}
+}).catch(() => {});
+const isMgrView = () => !!(modalRow && modalRow.mgr) || (typeof modalTab !== 'undefined' && modalTab === 'managing');
+const payloadImageURL = (pid, asMgr) => isTeamPid(pid) ? teamSpotURL(teamIdFromPid(pid))
+  : ((asMgr && photoMap['m:' + pid]) || photoMap[pid] || headshotURL(pid));
 
 async function fetchStat(pid, group, tf, year) {
   const base = `${statsBase(pid)}/stats?season=${year}&group=${group}`;
@@ -2050,6 +2059,7 @@ function normalizeContract(c) {
 
 function setModalTab(tab) {
   modalTab = tab;
+  try { if (modalPid && !isTeamPid(modalPid)) $('modalHeadshot').src = payloadImageURL(modalPid, isMgrView()); } catch (e) {}
   $('statsPane').hidden = tab !== 'stats';
   $('contractPane').hidden = tab !== 'contract';
   $('awardsPane').hidden = tab !== 'awards';
@@ -2419,7 +2429,7 @@ async function paintTeamMgrBox() {
   if (modalPid !== pid) return;
   if (!mg) { box.innerHTML = `<h3>Manager</h3><div class="modal-empty">No manager listed for ${year}.</div>`; return; }
   const mid = mg.person.id;
-  box.innerHTML = `<h3>Manager</h3><div class="scope-row" style="align-items:center;gap:10px"><img src="${headshotURL(mid)}" alt="" style="width:48px;height:48px;border-radius:50%;object-fit:cover;background:#1A1A1A">` +
+  box.innerHTML = `<h3>Manager</h3><div class="scope-row" style="align-items:center;gap:10px"><img src="${payloadImageURL(mid, true)}" alt="" style="width:48px;height:48px;border-radius:50%;object-fit:cover;background:#1A1A1A">` +
     `<button type="button" class="tf-pill" id="tmMgrOpen">${mg.person.fullName} · open manager stats</button></div>`;
   $('tmMgrOpen').onclick = async () => {
     const teamName = modalRow.team;
@@ -2466,7 +2476,7 @@ async function openPlayerModal(pid, oppTeamId, startTab) {
   modalSeasons = new Set([String($('season').value)]);
   modalSeasonList = [];
   $('modalDlNote').textContent = '';
-  $('modalHeadshot').src = payloadImageURL(pid);
+  $('modalHeadshot').src = payloadImageURL(pid, !!(row && row.mgr));
   $('modalHeadshot').classList.remove('is-team');
   $('modalName').textContent = row.name;
   $('modalSub').textContent = baseModalSubText(row);
@@ -3490,7 +3500,7 @@ async function renderLowerThird(data, row, pid) {
     document.fonts.load('700 18px "Sofia Sans Extra Condensed"'),
     document.fonts.load('800 40px "Sofia Sans Extra Condensed"'),
   ]);
-  let img = await loadSafeImage(payloadImageURL(pid));
+  let img = await loadSafeImage(payloadImageURL(pid, !!(row && row.pos === 'MANAGER')));
   // If the badge host doesn't allow cross-origin canvas reads it comes back null — fall back to
   // the cap logo so a downloaded PNG still carries a mark rather than "NO PHOTO".
   if (!img && isTeamPid(pid)) img = await loadSafeImage(logoURL(teamIdFromPid(pid)));
@@ -3746,7 +3756,7 @@ function paintOnAirBar(root, payload) {
   const bar = q('.lt-bar');
   const isTeam = isTeamPid(payload.pid);
   const hs = q('.lt-headshot');
-  hs.src = payloadImageURL(payload.pid);
+  hs.src = payloadImageURL(payload.pid, payload.pos === 'MANAGER');
   hs.classList.toggle('lt-headshot-team', isTeam);
   q('.lt-info').classList.toggle('lt-info-team', isTeam);
   if (isTeam) {

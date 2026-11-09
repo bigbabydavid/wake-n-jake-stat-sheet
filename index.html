@@ -1422,6 +1422,9 @@ fetch('photos.json?ts=' + Date.now(), { cache: 'no-store' }).then(r => r.ok ? r.
   try { if (modalPid && !isTeamPid(modalPid)) $('modalHeadshot').src = payloadImageURL(modalPid, isMgrView()); } catch (e) {}
 }).catch(() => {});
 const isMgrView = () => !!(modalRow && modalRow.mgr) || (typeof modalTab !== 'undefined' && modalTab === 'managing');
+// Players whose lower third should show a name different from MLB's listing (e.g. the middle name).
+const NAME_OVERRIDES = { '669432': "Trevor J'Daniel Rogers" };
+const graphicName = (pid, name) => NAME_OVERRIDES[String(pid)] || name;
 const payloadImageURL = (pid, asMgr) => isTeamPid(pid) ? teamSpotURL(teamIdFromPid(pid))
   : ((asMgr && photoMap['m:' + pid]) || photoMap[pid] || headshotURL(pid));
 
@@ -3639,7 +3642,7 @@ async function renderLowerThird(data, row, pid) {
     ctx.fillText(nickOf(fullName).toUpperCase(), nx, 140);
   } else {
     ctx.fillStyle = '#F7C600'; ctx.font = '62px Anton';
-    ctx.fillText(row.name.toUpperCase(), nx, 124);
+    ctx.fillText(graphicName(pid, row.name).toUpperCase(), nx, 124);
     ctx.fillStyle = '#F5F5F0'; ctx.font = '700 20px "Sofia Sans Extra Condensed"';
     ctx.fillText([row.number ? `#${row.number}` : '', row.pos, row.team]
       .filter(Boolean).join('  \u00b7  ').toUpperCase(), nx, 156);
@@ -3753,7 +3756,7 @@ let onAirPid = null, onAirKind = null;
 function pushOnAir(pid, kind, row, data) {
   if (!row || !data) return;
   onAirPid = pid; onAirKind = kind;
-  const payload = { pid, kind, name: row.name, pos: row.pos, number: row.number || '', team: row.team, data, ts: Date.now() };
+  const payload = { pid, kind, name: graphicName(pid, row.name), pos: row.pos, number: row.number || '', team: row.team, data, ts: Date.now() };
   try { localStorage.setItem(LT_KEY, JSON.stringify(payload)); } catch {}
   if (ltChannel) ltChannel.postMessage(payload);
   if (ltRef) ltRef.set(payload).catch(e => console.error('Firebase push failed:', e));

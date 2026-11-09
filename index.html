@@ -369,6 +369,7 @@
         <button type="button" data-mode="teams" class="on">Teams</button>
         <button type="button" data-mode="positions">Positions</button>
         <button type="button" data-mode="all">All Players</button>
+        <button type="button" data-mode="fa">Free Agents</button>
         <button type="button" data-mode="bvp">BvP Matchups</button>
       </div>
     </div>
@@ -768,12 +769,94 @@ function renderAllPlayers(divShortFilter) {
   renderPlayerList(bits, list);
 }
 
+// =====================================================================================
+// Free Agents — everyone MLB lists as a free agent after the selected season (people/freeAgents).
+// Default view is the real market: not yet signed, no minor-league free agents. Pills widen it.
+// =====================================================================================
+let faCache = new Map();          // season -> rows
+let faState = { status: 'avail', minors: false };
+let __faGen = 0;
+const FA_POS_GROUPS = { P: ['P', 'SP', 'RP'], OF: ['OF', 'LF', 'CF', 'RF'], IF: ['IF', '1B', '2B', '3B', 'SS'] };
+const faPosMatch = (pos, filter) => !filter || pos === filter || (FA_POS_GROUPS[filter] || []).includes(pos);
+async function renderFreeAgents() {
+  currentView = 'fa';
+  setTeamBadge(null);
+  const year = $('season').value, gen = ++__faGen;
+  $('out').innerHTML = '';
+  say('Loading free agents…');
+  let rows = faCache.get(year);
+  if (!rows) {
+    try {
+      const d = await j(`${API}/people/freeAgents?season=${year}`);
+      rows = (d.freeAgents || []).map(x => ({
+        id: x.player.id, name: x.player.fullName,
+        pos: (x.position && x.position.abbreviation) || '',
+        teamId: x.originalTeam ? x.originalTeam.id : null,
+        teamName: x.originalTeam ? x.originalTeam.name : '',
+        newTeam: x.newTeam && x.newTeam.id ? x.newTeam.name : '',
+        notes: (x.notes || '').replace(/\.$/, ''), date: x.dateDeclared || '',
+        minors: /minor league/i.test(x.notes || ''),
+      }));
+      faCache.set(year, rows);
+    } catch (e) { if (gen === __faGen) say('Could not load free agents: ' + e.message, true); return; }
+  }
+  if (gen !== __faGen) return;
+  say('');
+  sortState = { table: 'fa', key: null, dir: 1 };
+  paintFreeAgents();
+}
+function paintFreeAgents() {
+  const year = $('season').value, all = faCache.get(year) || [];
+  let rows = all.filter(r => faPosMatch(r.pos, posFilter));
+  if (!faState.minors) rows = rows.filter(r => !r.minors);
+  if (faState.status === 'avail') rows = rows.filter(r => !r.newTeam);
+  else if (faState.status === 'signed') rows = rows.filter(r => r.newTeam);
+  currentIndex = new Map();
+  rows.forEach(r => currentIndex.set(String(r.id), { id: r.id, name: r.name, pos: r.pos, number: '', team: r.teamName, teamId: r.teamId, isActive: true, fa: true }));
+  const active = sortState.table === 'fa' && sortState.key ? sortState : null;
+  const list = active ? sortRows(rows, active.key, active.dir)
+    : [...rows].sort((a, b) => posRank(a.pos) - posRank(b.pos) || a.name.localeCompare(b.name));
+  const table = el('table', 'players');
+  const thead = el('thead'), hr = el('tr');
+  hr.appendChild(sortableTh('Name', 'name', 'fa'));
+  hr.appendChild(sortableTh('Pos', 'pos', 'fa'));
+  hr.appendChild(sortableTh(`${year} Team`, 'teamName', 'fa'));
+  hr.appendChild(sortableTh('Status', 'newTeam', 'fa'));
+  hr.appendChild(sortableTh('Declared', 'date', 'fa'));
+  thead.appendChild(hr); table.appendChild(thead);
+  const tbody = el('tbody');
+  list.forEach(r => {
+    const tr = el('tr'); tr.dataset.pid = r.id;
+    tr.appendChild(el('td', 'name', r.name));
+    tr.appendChild(el('td', null, r.pos));
+    tr.appendChild(el('td', null, r.teamName));
+    const st = el('td', null, ''); st.innerHTML = r.newTeam
+      ? `<span class="badge il">${r.notes && !/^claimed/i.test(r.notes) ? r.notes + ' · ' : 'Claimed · '}${r.newTeam}</span>`
+      : `<span class="badge active">Available</span>${r.notes && !r.minors ? ' <span style="opacity:.6">' + r.notes + '</span>' : ''}${r.minors ? ' <span style="opacity:.6">minor-league FA</span>' : ''}`;
+    tr.appendChild(st);
+    tr.appendChild(el('td', null, r.date));
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  addTable(`${year} Free Agents${posFilter ? ' · ' + posFilter : ''} (${list.length})`, table,
+    'Straight from MLB\u2019s free-agent list. Click anyone for stats, contract history and awards.');
+  const bar = el('div', 'scope-row'); bar.style.margin = '6px 0 10px';
+  [['avail', 'AVAILABLE'], ['signed', 'SIGNED / CLAIMED'], ['all', 'ALL']].forEach(([k, label]) => {
+    const b = el('button', 'tf-pill' + (faState.status === k ? ' on' : ''), label); b.type = 'button';
+    b.onclick = () => { faState.status = k; paintFreeAgents(); }; bar.appendChild(b);
+  });
+  const mb = el('button', 'tf-pill' + (faState.minors ? ' on' : ''), 'INCLUDE MINOR-LEAGUE FAs'); mb.type = 'button';
+  mb.onclick = () => { faState.minors = !faState.minors; paintFreeAgents(); }; bar.appendChild(mb);
+  const h2 = $('out').querySelector('h2'); h2.after(bar);
+}
+
 // Single entry point every control routes through, so the landing view always reflects the
 // current browse mode + division + position together instead of each control fighting the others.
 function renderLanding() {
   const dv = $('division').value;
   populatePositionSelect(dv);
   if (browseMode === 'bvp') { renderMatchupPage(); return; }
+  if (browseMode === 'fa') { renderFreeAgents(); return; }
   if (browseMode === 'positions') {
     if (posFilter) renderPositionResults(posFilter);
     else renderPositionDirectory(dv);
@@ -4038,6 +4121,7 @@ $('position').onchange = () => {
   posFilter = $('position').value;
   $('find').value = '';
   if (currentView === 'roster' && currentTeamId) paintRoster();
+  else if (browseMode === 'fa' && currentView === 'fa') paintFreeAgents();
   else renderLanding();
 };
 $('goHome').onclick = () => {
@@ -4068,7 +4152,7 @@ $('out').onclick = e => {
     const { key, tbl } = th.dataset;
     const same = sortState.table === tbl && sortState.key === key;
     sortState = { table: tbl, key, dir: same ? -sortState.dir : 1 };
-    if (tbl === 'roster') paintRoster(); else paintSearch();
+    if (tbl === 'roster') paintRoster(); else if (tbl === 'fa') paintFreeAgents(); else paintSearch();
     return;
   }
   const tr = e.target.closest('tbody tr');

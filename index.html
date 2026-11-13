@@ -2138,7 +2138,7 @@ function normalizeContract(c) {
     for (let y = +c.start; y <= +c.end; y++) seasons.set(String(y), aav);
   }
   const ys = [...seasons.keys()].map(Number).sort((a, b) => a - b);
-  return { total, years: years || ys.length, aav, seasons, note: c.note || '', summary: c.summary || '',
+  return { total, years: years || ys.length, aav, seasons, note: c.note || '', summary: c.summary || '', team: c.team || '',
            tags: c.tags || {},
            start: +c.start || ys[0], end: +c.end || ys[ys.length - 1] };
 }
@@ -2233,6 +2233,8 @@ async function paintContractPane() {
         paint();
       };
     });
+    // a contract can name the club it's with (e.g. a signing that isn't official yet), which then heads the graphic
+    const ctRow = c.team ? Object.assign({}, row, { team: c.team }) : row;
     const projGraphic = () => ({ label: `Projected ${fmtMoney(projVal)} in arbitration`, splitLabel: '', hitLine: '',
       sentenceMode: true, sentencePrefix: 'Projected', cells: [['in arbitration', fmtMoney(projVal)]], rankNote: arbSource });
     if (projYear) $('cPushProj').onclick = () => {
@@ -2244,7 +2246,7 @@ async function paintContractPane() {
       const data = { label: `${fmtMoney(c.total)} / ${c.years} yrs / ${fmtMoney(c.aav)} AAV`, splitLabel: 'CONTRACT',
         hitLine: c.start && c.end ? `${c.start}–${c.end}` : '',
         cells: [['TOTAL', fmtMoney(c.total)], ['YEARS', String(c.years)], ['AAV', fmtMoney(c.aav)]] };
-      pushOnAir(pid, 'bat', row, data);
+      pushOnAir(pid, 'bat', ctRow, data);
       $('modalDlNote').textContent = `On air: ${data.label}`;
     };
     $('cPushAav').onclick = () => {
@@ -2253,7 +2255,7 @@ async function paintContractPane() {
       const data = projYear && s2.length === 1 && isProj(s2[0]) ? projGraphic() : { label: `${span} AAV ${fmtMoney(selAvg())}`, splitLabel: `CONTRACT · ${span}` + (projYear && s2.includes(projYear) ? ` · ${projYear} PROJECTED (${arbSource.toUpperCase()})` : ''), hitLine: '',
         cells: s2.length === 1 ? [['AAV', fmtMoney(selAvg())]]
           : [['AAV', fmtMoney(selAvg())], ['SEASONS', String(s2.length)], ['TOTAL', fmtMoney(selTotal())]] };
-      pushOnAir(pid, 'bat', row, data);
+      pushOnAir(pid, 'bat', ctRow, data);
       $('modalDlNote').textContent = `On air: ${data.label}`;
     };
   };

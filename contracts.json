@@ -12538,19 +12538,17 @@
   },
   "641343": {
    "name": "Jake Bauers",
-   "summary": "1 yr, $2.7M (2026)",
-   "total": 2700000,
-   "years": 1,
-   "start": 2026,
-   "end": 2026,
-   "aav": 2700000,
-   "seasons": {
-    "2026": 2700000
-   },
-   "tags": {
-    "2027": "FREE AGENT"
-   },
-   "source": "FanGraphs Roster Resource, Brewers payroll 2026"
+   "team": "Boston Red Sox",
+   "summary": "4 yr, $58M (2027-30) with Boston Red Sox",
+   "total": 58000000,
+   "years": 4,
+   "start": 2027,
+   "end": 2030,
+   "aav": 14500000,
+   "seasons": {},
+   "tags": {},
+   "note": "Agreed, pending official announcement. Year-by-year split not reported, so each season shows at the AAV. Previous deal: 1 yr, $2.7M (2026, Brewers).",
+   "source": "Reported by Wake N Jake (not yet official)"
   },
   "683734": {
    "name": "Andrew Vaughn",

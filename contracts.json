@@ -12545,10 +12545,17 @@
    "start": 2027,
    "end": 2030,
    "aav": 14500000,
-   "seasons": {},
-   "tags": {},
-   "note": "Agreed, pending official announcement. Year-by-year split not reported, so each season shows at the AAV. Previous deal: 1 yr, $2.7M (2026, Brewers).",
-   "source": "Reported by Wake N Jake (not yet official)"
+   "seasons": {
+    "2027": 14500000,
+    "2028": 14500000,
+    "2029": 14500000,
+    "2030": 14500000
+   },
+   "tags": {
+    "2031": "FREE AGENT"
+   },
+   "note": "Agreed, pending official announcement. $14.5M each season 2027-30, no signing bonus. Previous deal: 1 yr, $2.7M (2026, Brewers).",
+   "source": "Spotrac (not yet official)"
   },
   "683734": {
    "name": "Andrew Vaughn",

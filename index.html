@@ -428,6 +428,7 @@
         <button type="button" class="tf-pill" data-round="W">World Series</button>
       </div>
       <div class="scope-row" id="postseasonYearsRow"><span class="modal-empty">Loading postseason history…</span></div>
+      <div class="scope-row" id="wbcRow" hidden></div>
       <div class="scope-row">
         <label for="matchupSearch">Career vs. opponent</label>
         <input type="text" id="matchupSearch" placeholder="Search a player…" autocomplete="off" style="flex:1;min-width:180px">
@@ -1489,6 +1490,9 @@ let modalPostseasonYears = {};                // { hitting: Map(year->Map(round-
 let modalSelectedPostseasonYears = new Set(); // years currently checked in the postseason years row
 let modalPostseasonAllYears = false;          // "All Years" pill — mutually exclusive with the above
 let modalPostseasonRound = 'all';             // 'all' | 'F' | 'D' | 'L' | 'W'
+let modalWbc = {};                            // { hitting: Map(year->{stat,team}), pitching: same } — World Baseball Classic
+let modalWbcSel = new Set();                  // tournament years selected
+let modalWbcAll = false;
 
 const num = v => { const n = parseFloat(v); return isNaN(n) ? 0 : n; };
 // inningsPitched comes back as "62.1" meaning 62 innings + 1 out, so it can't be summed as a
@@ -1898,6 +1902,46 @@ function buildPostseasonGraphicData(row, years, allYears, round, forcedGroup) {
     ['HR', combined.homeRuns], ['RBI', combined.rbi] ] };
 }
 
+// ---- World Baseball Classic ----------------------------------------------------------
+// sportId 51, gameType P = every WBC game (pool through final). yearByYear gives one line per
+// tournament, with the country the player represented in team.name.
+async function loadWbcYears(pid, groups) {
+  const out = {};
+  await Promise.all(groups.map(async group => {
+    const d = await jc(`${statsBase(pid)}/stats?stats=yearByYear&group=${group}&sportId=51&gameType=P`).catch(() => null);
+    const splits = (d && d.stats && d.stats[0] && d.stats[0].splits) || [];
+    const byYear = new Map();
+    splits.forEach(sp => byYear.set(+sp.season, { stat: sp.stat, team: (sp.team && sp.team.name) || '' }));
+    out[group] = byYear;
+  }));
+  return out;
+}
+
+function buildWbcGraphicData(row, years, allYears, forcedGroup) {
+  const group = forcedGroup || (wantsPitching(row) && !wantsBatting(row) ? 'pitching' : 'hitting');
+  const byYear = modalWbc[group];
+  if (!byYear || !byYear.size) return null;
+  const yrs = (allYears ? [...byYear.keys()] : years.map(Number)).filter(y => byYear.has(y)).sort((a, b) => a - b);
+  if (!yrs.length) return null;
+  const combined = aggregateFor(group, yrs.map(y => byYear.get(y).stat));
+  const teams = [...new Set(yrs.map(y => byYear.get(y).team).filter(Boolean))];
+  const country = teams.length === 1 ? ` \u00b7 ${teams[0].toUpperCase()}` : '';
+  const label = allYears ? `CAREER WBC${country}`
+    : yrs.length === 1 ? `${yrs[0]} WBC${country}`
+    : `${yrs.join(', ')} WBC${country}`;
+  if (group === 'pitching') {
+    return { label, splitLabel: withSample(label, combined, 'pitching'), cells: [
+      ['IP', combined.inningsPitched], pitchEraCell(combined), ['WHIP', combined.whip],
+      ['W-L', `${combined.wins}-${combined.losses}`],
+      ...pitchKBBCells(combined) ] };
+  }
+  return { label, splitLabel: withSample(label, combined, 'hitting'), hitLine: `${combined.hits}-for-${combined.atBats}`, cells: [
+    ['AVG', combined.avg], ['OBP', combined.obp], ['SLG', combined.slg], ['OPS', combined.ops],
+    ['K%', kPct(combined.strikeOuts, combined.plateAppearances)],
+    ['BB%', bbPct(combined.baseOnBalls, combined.plateAppearances)],
+    ['HR', combined.homeRuns], ['RBI', combined.rbi] ] };
+}
+
 // Months are combinable the same way seasons are: pick any set, and the totals are aggregated
 // from each month's own date range. Restricted to the months baseball is actually played.
 const MONTH_LONG = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -2138,7 +2182,7 @@ function normalizeContract(c) {
     for (let y = +c.start; y <= +c.end; y++) seasons.set(String(y), aav);
   }
   const ys = [...seasons.keys()].map(Number).sort((a, b) => a - b);
-  return { total, years: years || ys.length, aav, seasons, note: c.note || '', summary: c.summary || '', team: c.team || '',
+  return { total, years: years || ys.length, aav, seasons, note: c.note || '', summary: c.summary || '', team: c.team || '', career: +c.career || 0, careerAsOf: c.careerAsOf || '', careerSource: c.careerSource || '',
            tags: c.tags || {},
            start: +c.start || ys[0], end: +c.end || ys[ys.length - 1] };
 }
@@ -2218,6 +2262,7 @@ async function paintContractPane() {
       (control ? `<div class="modal-empty" style="margin:4px 0 0">${control}</div>` : '') +
       (c.note ? `<div class="modal-empty" style="margin:4px 0 8px">${c.note}</div>` : '') +
       (c.arbOnly ? '' : `<div class="scope-row"><button type="button" class="tf-pill" id="cPushTotal">Total value · years · AAV</button></div>`) +
+      (c.career ? `<div class="scope-row"><button type="button" class="tf-pill" id="cPushCareer">Career earnings · ${fmtMoney(c.career)}${c.careerAsOf ? ' (through ' + c.careerAsOf + ')' : ''}</button></div>` : '') +
       (projYear ? `<div class="scope-row"><button type="button" class="tf-pill" id="cPushProj">Push ${projYear} · projected ${fmtMoney(projVal)} in arbitration</button></div>` +
         (arbEntry && arbEntry.note ? `<div class="modal-empty" style="margin:2px 0 8px">MLBTR note: ${arbEntry.note}</div>` : '') : '') +
       `<div class="scope-row"><label>AAV in seasons</label>` +
@@ -2237,6 +2282,13 @@ async function paintContractPane() {
     const ctRow = c.team ? Object.assign({}, row, { team: c.team }) : row;
     const projGraphic = () => ({ label: `Projected ${fmtMoney(projVal)} in arbitration`, splitLabel: '', hitLine: '',
       sentenceMode: true, sentencePrefix: 'Projected', cells: [['in arbitration', fmtMoney(projVal)]], rankNote: arbSource });
+    if ($('cPushCareer')) $('cPushCareer').onclick = () => {
+      const data = { label: `Career earnings ${fmtMoney(c.career)}`, splitLabel: '', hitLine: '', sentenceMode: true,
+        sentencePrefix: 'Has earned', cells: [['in his career', fmtMoney(c.career)]],
+        rankNote: [c.careerSource, c.careerAsOf ? 'through ' + c.careerAsOf : ''].filter(Boolean).join(' \u00b7 ') };
+      pushOnAir(pid, 'bat', ctRow, data);
+      $('modalDlNote').textContent = `On air: ${data.label}`;
+    };
     if (projYear) $('cPushProj').onclick = () => {
       const data = projGraphic();
       pushOnAir(pid, 'bat', row, data);
@@ -3428,6 +3480,60 @@ function wireModalExtras() {
         if (!data2) { $('modalDlNote').textContent = 'No postseason stats for that selection.'; return; }
         const isPit = forcedGroup ? forcedGroup === 'pitching' : (wantsPitching(r2) && !wantsBatting(r2));
         pushCustomGraphic(data2, isPit ? 'pit' : 'bat');
+      };
+    });
+  })();
+
+  // World Baseball Classic: hidden unless the player has WBC stats.
+  modalWbc = {}; modalWbcSel = new Set(); modalWbcAll = false;
+  const wbcRow = $('wbcRow');
+  wbcRow.hidden = true; wbcRow.innerHTML = '';
+  (async () => {
+    const pid = modalPid, r = modalRow;
+    if (isTeamPid(pid)) return;
+    const groups = [wantsBatting(r) && 'hitting', wantsPitching(r) && 'pitching'].filter(Boolean);
+    const data = await loadWbcYears(pid, groups).catch(() => ({}));
+    if (modalPid !== pid) return;
+    modalWbc = data;
+    const info = new Map();   // year -> country
+    Object.values(data).forEach(m => m.forEach((v, y) => { if (!info.has(y)) info.set(y, v.team); }));
+    if (!info.size) return;
+    const years = [...info.keys()].sort((a, b) => b - a);
+    const abbr = t => (t || '').split(' ').map(w => w[0]).join('').slice(0, 3);
+    const applyHTML = twoWay
+      ? `<button type="button" class="tf-pill" data-wapply data-group="hitting" disabled>Apply (Hitting)</button>
+         <button type="button" class="tf-pill" data-wapply data-group="pitching" disabled>Apply (Pitching)</button>`
+      : `<button type="button" class="tf-pill" data-wapply disabled>Apply</button>`;
+    wbcRow.innerHTML = '<label>World Baseball Classic</label>' +
+      (years.length > 1 ? '<button type="button" class="tf-pill" data-wyear="all">All WBC</button>' : '') +
+      years.map(y => `<button type="button" class="tf-pill" data-wyear="${y}" title="${info.get(y) || ''}">${y}${info.get(y) ? ' ' + (info.get(y).length > 12 ? abbr(info.get(y)) : info.get(y)) : ''}</button>`).join('') +
+      applyHTML;
+    wbcRow.hidden = false;
+    const applies = [...wbcRow.querySelectorAll('[data-wapply]')];
+    const sync = () => applies.forEach(b => { b.disabled = !modalWbcAll && !modalWbcSel.size; });
+    wbcRow.querySelectorAll('[data-wyear]').forEach(b => {
+      b.onclick = () => {
+        if (b.dataset.wyear === 'all') {
+          modalWbcAll = !modalWbcAll; modalWbcSel.clear();
+          wbcRow.querySelectorAll('[data-wyear]').forEach(x => x.classList.toggle('on', x.dataset.wyear === 'all' && modalWbcAll));
+        } else {
+          modalWbcAll = false;
+          const ab = wbcRow.querySelector('[data-wyear="all"]'); if (ab) ab.classList.remove('on');
+          const y = b.dataset.wyear;
+          if (modalWbcSel.has(y)) { modalWbcSel.delete(y); b.classList.remove('on'); }
+          else { modalWbcSel.add(y); b.classList.add('on'); }
+        }
+        sync();
+      };
+    });
+    applies.forEach(b => {
+      b.onclick = () => {
+        if (!modalWbcAll && !modalWbcSel.size) return;
+        const forced = b.dataset.group || null;
+        const d2 = buildWbcGraphicData(modalRow, [...modalWbcSel], modalWbcAll, forced);
+        if (!d2) { $('modalDlNote').textContent = 'No WBC stats for that selection.'; return; }
+        const isPit = forced ? forced === 'pitching' : (wantsPitching(modalRow) && !wantsBatting(modalRow));
+        pushCustomGraphic(d2, isPit ? 'pit' : 'bat');
       };
     });
   })();
